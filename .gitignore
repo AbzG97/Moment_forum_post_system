@@ -23,5 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
-../fbServiceAccountKey.json
-../"Server side"/node_modules
+./fbServiceAccountKey.json
+./"Server side"/node_modules
