@@ -3,6 +3,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const checkAuth = require('./backendAuth');
 const eventRouter = require('./EventRouter');
+require("dotenv");
 
 
 var app = express();
