@@ -3,11 +3,55 @@ import styled from 'styled-components'
 import Sidebar from './Sidebar'
 import { useAuth } from '../AuthContext'
 import {Link, Switch, Route, useHistory, useParams, useRouteMatch} from 'react-router-dom'
+import axios from 'axios'
+import firebase from 'firebase/app'
+
 
 
 
 function UserProfile() {
-    const {currentUser, Logout} = useAuth();
+    const {currentUser} = useAuth();
+    const [posts, setPosts] = React.useState([]);
+    const [token, setToken] = React.useState("");
+    const [loading, setLoading] = React.useState();
+
+
+    React.useEffect(() => {
+        const getToken = async () => {
+            setLoading(true)
+            if(firebase.auth().currentUser){
+                const decoded = await firebase.auth().currentUser.getIdToken(true);
+                const response = await axios({
+                    method: "get",
+                    url: "http://localhost:3001/user/profile/myEvents",
+                    headers: {
+                        "authtoken": decoded
+                    }
+                });
+                setPosts(response.data.posts);
+            }
+        }
+        getToken();
+        setLoading(false);
+    }, []);
+ 
+
+    // React.useEffect(() => {
+    //     setLoading(true)
+    //     const FetchPostsMadeByUser = async () => {
+    //         const response = await axios({
+    //             method: "get",
+    //             url: "http://localhost:3001/user/profile/myEvents",
+    //             headers: {
+    //                 "authtoken": token
+    //             }
+    //         });
+    //         setPosts(response.data);
+    //     }
+    //    FetchPostsMadeByUser();
+    //    setLoading(false);
+    // }, [])
+
     return (
        <StyledProfile>
            <Sidebar/>
@@ -23,6 +67,24 @@ function UserProfile() {
                     <button className="updateBtn">Update profile</button>
                     <button className="deleteBtn">Delete profile</button>
                 </div>
+           </div>
+           <div className="postsMade">
+               <h2>Posts made</h2>
+               <table>
+                    <tr>
+                       <th>title</th>
+                       <th>desciption</th>
+                       <th>Action</th>
+                   </tr>
+                {!loading && posts && posts.map((post) => (
+                    <tr>
+                        <td>{post.title}</td>
+                        <td>{post.description}</td>
+                        <td><button>Update</button> / <button>Delete</button> / <button><Link to={`/details/${post._id}`}>View</Link></button> </td>
+                    </tr>
+                            
+                ))}
+               </table>
            </div>
        </StyledProfile>
             
@@ -92,10 +154,20 @@ const StyledProfile = styled.div`
                 }
             }
         }
-
-
-
     }
+    .postsMade {
+            table {
+                /* border: 2px solid black; */
+                border-collapse:separate;
+                border-spacing:0 5px;
+                width: 100%;
+                text-align: center;
+                td {
+                    border-bottom: 2px solid black;
+                    padding-bottom: 1rem;
+                } 
+            }
+        }
 `
 
 export default UserProfile

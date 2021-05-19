@@ -40,6 +40,16 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    comments: [{
+        commentBy: {
+            type:String,
+            required: false
+        },
+        commentDesc: {
+            type: String,
+            required: false
+        }
+    }],
     postedBy: {
         type: String,
         required: true

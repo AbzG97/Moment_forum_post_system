@@ -15,15 +15,31 @@ mongoose.connect('mongodb://localhost:27017/moments-db', {
 
 
 // get all events from database
-eventRouter.get('/events',  async (req, res) => {
+eventRouter.get('/events',auth,  async (req, res) => {
     // console.log(req.user.uid);
     try {
         const events = await eventModel.find({});
-        console.log(events);
         if(events.length === 0){
             res.status(200).send({message: 'empty database'}) 
         } else {
             res.status(200).send({events: events});
+        }
+        
+
+    } catch (e){
+        res.status(500).send({message: 'server error'});
+    }
+})
+
+// get a single post from database
+eventRouter.get('/events/:id',auth,  async (req, res) => {
+    // console.log(req.user.uid);
+    try {
+        const post = await eventModel.findById(req.params.id);
+        if(post.length === 0){
+            res.status(200).send({message: 'empty database'}) 
+        } else {
+            res.status(200).send({post: post});
         }
         
 
@@ -63,14 +79,15 @@ eventRouter.post('/event', auth, async (req, res) => {
     }
 });
 
-// get all the events posted that were made by the logged in and authenticated user
+// get all the postsed that that were made by the logged in and authenticated user
 eventRouter.get('/user/profile/myEvents', auth, async(req, res) => {
+    console.log(req.user.uid);
     try {
-        const events = await eventModel.find({eventOwner: req.user.uid}); // find using the authenticated user id
-        if(events.length === 0 ){
+        const posts = await eventModel.find({postedBy: req.user.uid}); // find using the authenticated user id
+        if(posts.length === 0 ){
             res.status(204).send({message: "you have not posted any events"});
         }  else {
-            res.status(200).send({message: `event posts made by ${req.user.email}`, events: events, count: events.length});
+            res.status(200).send({posts: posts});
         }
 
     } catch (e) {
@@ -134,6 +151,25 @@ eventRouter.post('/event/like/:id', auth, async (req,res) => {
     } catch (e) {
 
     }
-})
+});
+
+// add comment to the post
+eventRouter.post('/event/comment/:id', auth, async (req,res) => {
+    const data = { 
+        commentDesc: req.body.comment,
+        commentBy: req.user.uid
+    }
+    try {
+        const post = await eventModel.findById(req.params.id);
+        post.comments.push(data);
+        await post.save();
+
+
+    } catch (e) {
+
+    }
+    console.log(data);
+    console.log(req.params.id);
+});
 
 module.exports = eventRouter;

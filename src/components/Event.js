@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faBookmark, faComment } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import firebase from 'firebase/app'
+import {Link} from 'react-router-dom'
 
-function Event({event}) {
+function Event({event, setDetailedPost}) {
     const [likes, setLikes] = React.useState(event.likedBy.length);
     const [token, setToken] = React.useState("");
+    const [liked, setLiked] = React.useState(false);
     
      // get the token of the current user to be used in for authenticating the user to use the events api 
      React.useEffect(() => {
@@ -33,13 +35,17 @@ function Event({event}) {
                 'authtoken': token
             }
         })
-        
-        
+        setLiked(true);   
+    }
+
+    const ViewBtnHandler = () => {
+        localStorage.setItem("event", JSON.stringify(event));
+        setDetailedPost(event);
     }
 
     return (
         <EventCard>
-            <img className="picture" src={event.picture} alt="picture"/>
+            <img className="picture" src={event.picture}  alt="picture"/>
             <div className="container">
                 
                 <div className="data">
@@ -47,7 +53,7 @@ function Event({event}) {
                     <p className="title">{event.title}</p>
                     <p className="venue">{event.description}</p>
                     <p>{JSON.stringify(event.category)}</p>
-                    <button className="viewBtn">View</button>
+                    <button className="viewBtn" onClick={ViewBtnHandler}><Link to={`/details/${event._id}`}>View</Link></button>
                     
                 </div>
             
@@ -151,6 +157,9 @@ const EventCard = styled.div`
                 }
 
             }
+            .liked {
+                color : red;
+            }
         }
     }
     .stats {
@@ -174,7 +183,7 @@ const EventCard = styled.div`
             border-left: 2px solid limegreen;
         }
     }
-   
+ 
 `
 
 export default Event
