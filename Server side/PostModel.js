@@ -10,7 +10,7 @@ mongoose.connect('mongodb://localhost:27017/moments-db', {
 
 // creating the events schema and model
 
-const eventSchema = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
     title: {
         type: String,
         require: false,
@@ -21,22 +21,6 @@ const eventSchema = new mongoose.Schema({
         require: false
     },
     category: {
-        type: String,
-        required: false
-    },
-    // date: {
-    //     type: Date,
-    //     required: false
-    // },
-    picture: {
-        type: String,
-        required: false
-    },
-    likedBy: [{
-        type: String,
-        required: false
-    }],
-    savedBy: {
         type: String,
         required: false
     },
@@ -56,8 +40,8 @@ const eventSchema = new mongoose.Schema({
     }
 });
 
-const eventModel = mongoose.model('Event', eventSchema);
+const postModel = mongoose.model('Post', postSchema);
 
-module.exports = eventModel;
+module.exports = postModel;
 
 

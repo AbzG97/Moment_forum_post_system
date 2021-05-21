@@ -1,19 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import { useAuth } from '../AuthContext'
-import {Link, Switch, Route, useHistory, useParams, useRouteMatch} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import axios from 'axios'
 import firebase from 'firebase/app'
+import UpdateForm from './UpdateForm'
+import {Alert, Button, ButtonGroup} from 'react-bootstrap'
 
-
-
-
-function UserProfile() {
-    const {currentUser} = useAuth();
-    const [posts, setPosts] = React.useState([]);
+const UserProfile = ({setDetailedPost}) => {
+    
+    const [postsMadeByUser, setPostsMadeByUser] = React.useState();
     const [token, setToken] = React.useState("");
     const [loading, setLoading] = React.useState();
+    const [deleted, SetDeleted] = React.useState(false);
+    const [updateForm, setUpdateForm] = React.useState(false);
+    const [updatedPost, setUpdatedPost] = React.useState();
+    const [message, setMessage] = React.useState();
+   
+   
 
 
     React.useEffect(() => {
@@ -23,35 +27,20 @@ function UserProfile() {
                 const decoded = await firebase.auth().currentUser.getIdToken(true);
                 const response = await axios({
                     method: "get",
-                    url: "http://localhost:3001/user/profile/myEvents",
+                    url: "/user/profile/myPosts",
                     headers: {
                         "authtoken": decoded
                     }
                 });
-                setPosts(response.data.posts);
+                setPostsMadeByUser(response.data.posts);
+                setToken(decoded);
             }
         }
         getToken();
         setLoading(false);
-    }, []);
+    }, [deleted]); // user posts are retreived from database everytime a post is deleted
  
-
-    // React.useEffect(() => {
-    //     setLoading(true)
-    //     const FetchPostsMadeByUser = async () => {
-    //         const response = await axios({
-    //             method: "get",
-    //             url: "http://localhost:3001/user/profile/myEvents",
-    //             headers: {
-    //                 "authtoken": token
-    //             }
-    //         });
-    //         setPosts(response.data);
-    //     }
-    //    FetchPostsMadeByUser();
-    //    setLoading(false);
-    // }, [])
-
+   
     return (
        <StyledProfile>
            <Sidebar/>
@@ -71,21 +60,45 @@ function UserProfile() {
            <div className="postsMade">
                <h2>Posts made</h2>
                <table>
-                    <tr>
-                       <th>title</th>
-                       <th>desciption</th>
-                       <th>Action</th>
-                   </tr>
-                {!loading && posts && posts.map((post) => (
-                    <tr>
-                        <td>{post.title}</td>
-                        <td>{post.description}</td>
-                        <td><button>Update</button> / <button>Delete</button> / <button><Link to={`/details/${post._id}`}>View</Link></button> </td>
-                    </tr>
-                            
-                ))}
+                   <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Desciption</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                   <tbody>
+                    {!loading && postsMadeByUser && postsMadeByUser.map((post) => (
+                        <tr key={post._id}>
+                            <td>{post.title}</td>
+                            <td>{post.description}</td>
+                            <td>{post.category}</td>
+                            <td>
+                            <Button variant="outline-warning" onClick={() => {
+                                setUpdateForm(!updateForm)
+                                setUpdatedPost(post);
+                            }}>Update</Button> / <Button variant="outline-danger" onClick={async () => {
+                                await axios({
+                                    method:"DELETE",
+                                    url: `http://localhost:3001/posts/delete/${post._id}`,
+                                    headers: {
+                                        'authtoken': token
+                                    }
+                                });
+                                SetDeleted(!deleted);
+
+                            }}>Delete</Button> / <Link to={`/details/${post._id}`}><Button variant="outline-info" onClick={() =>
+                                { localStorage.setItem('detailedPost', JSON.stringify(post));
+                            setDetailedPost(post)}}>View</Button></Link> </td>
+                        </tr>
+                                
+                    ))}
+                </tbody>
                </table>
            </div>
+           {updateForm && <UpdateForm updatedPost={updatedPost} setMessage={setMessage} />}
+
        </StyledProfile>
             
         

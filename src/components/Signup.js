@@ -2,6 +2,7 @@ import React from 'react'
 import {useAuth} from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
+import { Alert } from 'react-bootstrap';
 
 
 
@@ -12,7 +13,7 @@ function Signup() {
     const [confPassword, setConfPassword] = React.useState("");
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const {Signup} = useAuth(); // pulling the signup function from context using the hook
+    const {Signup, updateProfile} = useAuth(); // pulling the signup function from context using the hook
     const history = useHistory();
 
     const handleSubmit = async (e) => {
@@ -24,6 +25,7 @@ function Signup() {
                 setError("");
                 setLoading(true);
                 await Signup(email, password); // value from forms
+                await updateProfile(name);
                 history.push('/');
                 
             } catch {
@@ -33,14 +35,25 @@ function Signup() {
         }
         setLoading(false);
     }
+
+    React.useEffect(() => {
+        const timeId = setTimeout(() => {
+            // After 3 seconds set the show value to false
+            setError("");
+          }, 8500)
+          return () => {
+              clearTimeout(timeId);
+          }
+    }, []);
+    
     return (
         <StyledSignup>
-            {/* <div className="shape"></div>
-            <div className="shape2"></div> */}
+            {error && <Alert variant="danger">{error}</Alert>}
             <div className="container">
-                
+            <div className="alert">
+            </div>
                 <h1>Join us</h1>
-                {error && error}
+               
                 <br></br>
             
                 <form onSubmit={handleSubmit}>
@@ -69,37 +82,18 @@ function Signup() {
 
 const StyledSignup = styled.div`
     letter-spacing: 2px;
-    background-color: #8a00e0;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    .shape {
-        width: 75%;
-        height: 50vh;
-        background-color: white;
-        position: fixed;
-        top: 0;
-        right:0;
-        border-radius: 23% 77% 10% 90% / 39% 0% 100% 61%;
-        -webkit-box-shadow: 0px 0px 20px 3px #000000; 
-        box-shadow: 0px 0px 20px 3px #000000;
-    }
-    .shape2 {
-        width: 55%;
-        height: 50vh;
-        background-color: red;
-        position: fixed;
-        top: 0;
-        left: 0;
-        border-radius: 0% 100% 100% 0% / 100% 0% 100% 0%;
-        -webkit-box-shadow: 0px 0px 20px 3px #000000; 
-        box-shadow: 0px 0px 20px 3px #000000;
-    }
+    flex-direction: column;
+    color: black;
+    
+    
     .container {
-        z-index: 1;
+        padding: 1rem;
         border-radius: 10px;
-        background-color: #072178;
+        background-color: lightgreen;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -123,7 +117,7 @@ const StyledSignup = styled.div`
             justify-content: center;
             input {
                 letter-spacing: 2px;
-                color: white;
+                color: black;
                 border: none;
                 background-color: transparent;
                 border-bottom: 2px gray solid;
@@ -142,18 +136,18 @@ const StyledSignup = styled.div`
                     font-size: 1.15rem;
                     cursor: pointer;
                     outline: none;
-                    background-color: #8a00e0;
+                    background-color: transparent;
                     width: 35%;
                     border-radius: 10px;
                     letter-spacing: 2px;
-                    border: none;
+                    border: 2px solid lightseagreen;
+                   
                     padding: .75rem;
                     margin-top: .5rem;
                     transition: all .25s ease-in-out;
                     font-weight: bold;
                     &:hover {
-                        -webkit-box-shadow: 0px 7px 20px 1px #000000; 
-                        box-shadow: 0px 7px 20px 1px #000000;
+                        background-color: lightseagreen;
                     }
                 }
             }
@@ -165,8 +159,8 @@ const StyledSignup = styled.div`
             span {
                 a {
                     text-decoration: none;
-                    color: limegreen;
-                    border-bottom: 2px limegreen solid;
+                    color: blue;
+                    border-bottom: 2px blue solid;
                 }
             }
         }

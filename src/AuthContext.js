@@ -39,12 +39,29 @@ export function AuthProvider({ children }) {
     React.useEffect(() => {
         // set current user
         const unsub = auth.onAuthStateChanged(user => {
+            // user.updateProfile({
+            //     displayName: "NEW USER NAME",
+            //     photoURL: "https://example.com/jane-q-user/profile.jpg"
+
+            // }).then(() => setCurrentUser(user));
             setCurrentUser(user); // saves current user in state 
             setLoading(false);
-            
         });
         return unsub;
     }, [])
+
+    const updateProfile = (name) => {
+        var user = firebase.auth().currentUser;
+        user.updateProfile({
+          displayName: name,
+          photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then(function() {
+          // Update successful.
+          console.log("user updated");
+        }).catch(function(error) {
+          // An error happened.
+        });
+    }
 
    
   
@@ -53,7 +70,8 @@ export function AuthProvider({ children }) {
         currentUser,
         Signup,
         Login,
-        Logout
+        Logout,
+        updateProfile
     }
     return (
         // this component will contain data of the current user to be used anywhere in the app

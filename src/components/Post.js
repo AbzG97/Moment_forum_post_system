@@ -5,13 +5,14 @@ import { faHeart, faBookmark, faComment } from '@fortawesome/free-solid-svg-icon
 import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
+import {ButtonGroup, Button, Form} from 'react-bootstrap'
 
-function Event({event, setDetailedPost}) {
-    const [likes, setLikes] = React.useState(event.likedBy.length);
+const Post = ({post, setDetailedPost,setMessage, setShow}) => {
     const [token, setToken] = React.useState("");
-    const [liked, setLiked] = React.useState(false);
-    
-     // get the token of the current user to be used in for authenticating the user to use the events api 
+    const [comment, setComment] = React.useState("");
+   
+    const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
+     // get the token of the current user to be used in for authenticating the user to use the posts api 
      React.useEffect(() => {
         const getToken = async () => {
             if(firebase.auth().currentUser){
@@ -22,54 +23,53 @@ function Event({event, setDetailedPost}) {
         getToken();
     }, []);
 
-    const LikePost = async () => {
-        let num = likes + 1;
-        setLikes(num);
-        await axios({
-            method: "post",
-            url: `http://localhost:3001/event/like/${event._id}`,
-            data: {
-                likes: num
-            },
-            headers: {
-                'authtoken': token
-            }
-        })
-        setLiked(true);   
+    const PostComment = async (e) => {
+        e.preventDefault();
+        setMessage("comment posted");
+        setToggleCommentForm(false);
+        setShow(true);
+        if(firebase.auth().currentUser){
+            const decoded = await firebase.auth().currentUser.getIdToken(true);
+            await axios({
+                method: "POST",
+                url: `/posts/comment/${post._id}`,
+                data: {
+                    comment: comment
+                },
+                headers: {
+                    'authtoken': decoded
+                }
+            })
+        }
+        
     }
 
-    const ViewBtnHandler = () => {
-        localStorage.setItem("event", JSON.stringify(event));
-        setDetailedPost(event);
+
+    const ViewBtnHandler = async () => {
+       localStorage.setItem('detailedPost', JSON.stringify(post));
+       setDetailedPost(post);
     }
 
     return (
         <EventCard>
-            <img className="picture" src={event.picture}  alt="picture"/>
             <div className="container">
-                
                 <div className="data">
-                    {/* <p className="date">{event.date}</p> */}
-                    <p className="title">{event.title}</p>
-                    <p className="venue">{event.description}</p>
-                    <p>{JSON.stringify(event.category)}</p>
-                    <button className="viewBtn" onClick={ViewBtnHandler}><Link to={`/details/${event._id}`}>View</Link></button>
-                    
-                </div>
-            
-                <div className="icons">
-                    <FontAwesomeIcon className="icon" onClick={LikePost} icon={faHeart} size="lg"/>
-                    <FontAwesomeIcon className="icon" icon={faBookmark} size="lg"/>
-                    <FontAwesomeIcon className="icon" icon={faComment} size="lg"/>
-                </div>
+                    <p className="title">{post.title}</p>
+                    <p className="venue">{post.description}</p>
+                    <p>#{post.category}</p>
+                    <ButtonGroup>
+                        <Link  to={`/details/${post._id}`}><Button variant="outline-primary" onClick={ViewBtnHandler}>View</Button></Link>
+                        <Button variant="outline-secondary" onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
 
-            </div>
-            
-            <div className="stats">
-                <p>Likes <span>{likes}</span></p>
-                <p className="saves">Saves <span>0</span></p>
-                <p>Comments <span>0</span></p>
-
+                    </ButtonGroup>
+                    {toggleCommentForm && <Form onSubmit={PostComment}>
+                        <Form.Group>
+                            <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)}/>
+                            <Button type="submit" variant="outline-success">Post comment</Button> 
+                        </Form.Group>
+                        
+                    </Form>}
+                </div>
             </div>
         </EventCard>
             
@@ -80,15 +80,15 @@ function Event({event, setDetailedPost}) {
 const EventCard = styled.div`
     margin: 1rem;
     letter-spacing: 2px;
-    /* padding: 1rem; */
-    /* background-color: #1b1b1b; */
     color: black;
     border-radius: 10px;
-    /* border: 2px limegreen solid; */
     -webkit-box-shadow: 0px 0px 25px 1px #000000; 
     box-shadow: 0px 0px 25px 0px #000000;
     position: relative;
-    /* height: 15vh; */
+    /* height: 22vh; */
+    a {
+        text-decoration: none;
+    }
     .picture {
         width: 100%;
         height: 50%;
@@ -122,7 +122,7 @@ const EventCard = styled.div`
                 font-size: 1.25rem;
                 padding: .5rem;
             }
-            .viewBtn {
+            /* .viewBtn {
                 letter-spacing: 2px;
                 outline: none;
                 background-color: transparent;
@@ -137,7 +137,7 @@ const EventCard = styled.div`
                 &:hover {
                     background-color: magenta;
                 }
-            }
+            } */
         }
         .icons {
             display: flex;
@@ -186,4 +186,4 @@ const EventCard = styled.div`
  
 `
 
-export default Event
+export default Post;

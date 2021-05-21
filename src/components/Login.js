@@ -2,6 +2,7 @@ import React from 'react'
 import {useAuth} from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
+import { Alert, Button } from 'react-bootstrap';
 
 
 function Login() {
@@ -11,6 +12,7 @@ function Login() {
     const [loading, setLoading] = React.useState(false);
     const {Login} = useAuth(); // pulling the signup function from context using the hook
     const history = useHistory();
+    // const [show, setShow] = React.useState();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,26 +28,33 @@ function Login() {
             }
             setLoading(false);
         }
+
+        React.useEffect(() => {
+            const timeId = setTimeout(() => {
+                // After 3 seconds set the show value to false
+                setError("");
+              }, 8500)
+              return () => {
+                  clearTimeout(timeId);
+              }
+        }, []);
         
     
 
     return (
         <StyledLogin>
-        {/* <div className="shape"></div>
-        <div className="shape2"></div> */}
+        <div className="alert">
+            {error && <Alert variant="danger">{error}</Alert>}
+        </div>
         <div className="container">
-            
             <h1>Login</h1>
-            {error && error}
-            <br></br>
-        
             <form onSubmit={handleSubmit}>
                 <input type="text" onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" required/>
                 <br></br>
                 <input type="text" onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
                 <br></br>
                 <div>
-                    <input className="submitBtn" type="submit" value="Login" disabled={loading}/>
+                <input className="submitBtn" type="submit" value="Login" disabled={loading}/>
                 </div>
                 
             </form>
@@ -60,38 +69,21 @@ function Login() {
 }
 
 const StyledLogin = styled.div`
+    color: black;
     letter-spacing: 2px;
-    background-color: #8a00e0;
+    /* background-color: #8a00e0; */
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    .shape {
-        width: 75%;
-        height: 50vh;
-        background-color: white;
-        position: fixed;
-        top: 0;
-        right:0;
-        border-radius: 23% 77% 10% 90% / 39% 0% 100% 61%;
-        -webkit-box-shadow: 0px 0px 20px 3px #000000; 
-        box-shadow: 0px 0px 20px 3px #000000;
-    }
-    .shape2 {
-        width: 55%;
-        height: 50vh;
-        background-color: red;
-        position: fixed;
-        top: 0;
-        left: 0;
-        border-radius: 0% 100% 100% 0% / 100% 0% 100% 0%;
-        -webkit-box-shadow: 0px 0px 20px 3px #000000; 
-        box-shadow: 0px 0px 20px 3px #000000;
+    flex-direction: column;
+    .alert {
+        margin-bottom: 2rem;
+        padding: 1rem;
     }
     .container {
-        z-index: 1;
         border-radius: 10px;
-        background-color: #072178;
+        background-color: lightgreen;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -115,7 +107,7 @@ const StyledLogin = styled.div`
             justify-content: center;
             input {
                 letter-spacing: 2px;
-                color: white;
+                color: black;
                 border: none;
                 background-color: transparent;
                 border-bottom: 2px gray solid;
@@ -134,18 +126,17 @@ const StyledLogin = styled.div`
                     font-size: 1.15rem;
                     cursor: pointer;
                     outline: none;
-                    background-color: #8a00e0;
+                    background-color: transparent;
                     width: 35%;
                     border-radius: 10px;
                     letter-spacing: 2px;
-                    border: none;
+                    border: 2px solid lightseagreen;
                     padding: .75rem;
                     margin-top: .5rem;
                     transition: all .25s ease-in-out;
                     font-weight: bold;
                     &:hover {
-                        -webkit-box-shadow: 0px 7px 20px 1px #000000; 
-                        box-shadow: 0px 7px 20px 1px #000000;
+                       background-color: lightseagreen;
                     }
                 }
             }
@@ -157,8 +148,8 @@ const StyledLogin = styled.div`
             span {
                 a {
                     text-decoration: none;
-                    color: limegreen;
-                    border-bottom: 2px limegreen solid;
+                    color: blue;
+                    border-bottom: 2px blue solid;
                 }
             }
         }
