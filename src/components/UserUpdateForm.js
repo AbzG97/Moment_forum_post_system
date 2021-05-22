@@ -3,35 +3,39 @@ import {useAuth} from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
+import Sidebar from './Sidebar';
 
 
 
-function Signup() {
+
+function UpdateUserForm() {
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
+    const [photoURL, setPhotoURL] = React.useState();
     const [password, setPassword] = React.useState("");
     const [confPassword, setConfPassword] = React.useState("");
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const {Signup, updateProfile} = useAuth(); // pulling the signup function from context using the hook
+    const {updateProfile, currentUser, updateEmail} = useAuth(); // pulling the signup function from context using the hook
+    
     const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== confPassword){
-            return setError("passwords must match");
-        } else {
+        // if (password !== confPassword){
+        //     return setError("passwords must match");
+        // } 
             try {
                 setError("");
                 setLoading(true);
-                await Signup(email, password, name); // value from forms
+                await updateEmail(email || currentUser.email); // value from forms
+                await updateProfile(name || currentUser.name, photoURL || currentUser.photoURL);
                 history.push('/');
                 
             } catch {
-                setError("failed to create an account");
+                setError("failed to update the account");
 
             }
-        }
         setLoading(false);
     }
 
@@ -46,36 +50,35 @@ function Signup() {
     }, []);
     
     return (
-        <StyledSignup>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <div className="container">
-            <div className="alert">
-            </div>
-                <h1>Join us</h1>
-               
-                <br></br>
-            
-                <form onSubmit={handleSubmit}>
-                    <input type="text" onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" required/>
-                    <br></br>
-                    <input type="text" onChange={(e) => setName(e.target.value)} placeholder="Name" required/>
-                    <br></br>
-                    <input type="text" onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
-                    <br></br>
-                    <input type="text" onChange={(e) => setConfPassword(e.target.value)} placeholder="Confirm password" required/>
-                    <br></br>
-                    <div>
-                        <input className="submitBtn" type="submit" value="Sign Up" disabled={loading}/>
-                    </div>
-                    
-                </form>
-                <div>
-                    <p>Already have an account click</p>
-                    <span><Link to="/login">here</Link></span>
+        <div>
+            <Sidebar/>
+            <StyledSignup>
+                {error && <Alert variant="danger">{error}</Alert>}
+                <div className="container">
+                <div className="alert">
                 </div>
+                    <h1>Update form</h1>
                 
-            </div>
-        </StyledSignup>
+                    <br></br>
+                
+                    <form onSubmit={handleSubmit}>
+                        <input type="text" onChange={(e) => setEmail(e.target.value)} defaultValue={currentUser.email} />
+                        <br></br>
+                        <input type="text" onChange={(e) => setName(e.target.value)} defaultValue={currentUser.displayName}/>
+                        <br></br>
+                        <input type="text" onChange={(e) => setPhotoURL(e.target.value)} defaultValue={currentUser.photoURL}/>
+                        <br></br>
+                        <input type="text" onChange={(e) => setPassword(e.target.value)} placeholder="Leave blank if you want the password unchanged"/>
+                        <br></br>
+                        <input type="text" onChange={(e) => setConfPassword(e.target.value)} placeholder="Leave blank if you want the password unchanged"/>
+                        <br></br>
+                        <div>
+                            <input className="submitBtn" type="submit" value="Update" disabled={loading}/>
+                        </div>
+                    </form>
+                </div>
+            </StyledSignup>
+        </div>
     )
 }
 
@@ -98,7 +101,7 @@ const StyledSignup = styled.div`
         justify-content: center;
         flex-direction: column;
         min-height: 65vh;
-        width: 25%;
+        width: 33%;
         -webkit-box-shadow: 0px 0px 20px 2px #000000; 
         box-shadow: 0px 0px 20px 2px #000000;
         h1 {
@@ -168,4 +171,4 @@ const StyledSignup = styled.div`
 
 `
 
-export default Signup;
+export default UpdateUserForm;

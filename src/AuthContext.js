@@ -19,10 +19,19 @@ export function AuthProvider({ children }) {
 
 
     // sign up function that will use firebase auth to create user and set it as current user
-    const Signup = (email, password) => {
+    const Signup = (email, password, username, photoURL) => {
         // change this code if custom auth for server
        
-       return auth.createUserWithEmailAndPassword(email, password);
+       return auth.createUserWithEmailAndPassword(email, password)
+       .then((user) => {
+         user =  firebase.auth().currentUser;
+         if(user){
+             user.updateProfile({
+                 displayName: username,
+                 photoURL: photoURL || "https://example.com/jane-q-user/profile.jpg"
+             })
+         }
+       })
     }
 
     const Login = (email, password) => {
@@ -39,29 +48,24 @@ export function AuthProvider({ children }) {
     React.useEffect(() => {
         // set current user
         const unsub = auth.onAuthStateChanged(user => {
-            // user.updateProfile({
-            //     displayName: "NEW USER NAME",
-            //     photoURL: "https://example.com/jane-q-user/profile.jpg"
-
-            // }).then(() => setCurrentUser(user));
             setCurrentUser(user); // saves current user in state 
             setLoading(false);
         });
         return unsub;
     }, [])
 
-    const updateProfile = (name) => {
-        var user = firebase.auth().currentUser;
-        user.updateProfile({
-          displayName: name,
-          photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(function() {
-          // Update successful.
-          console.log("user updated");
-        }).catch(function(error) {
-          // An error happened.
-        });
+    const updateEmail = (email) => {
+       
+       return currentUser.updateEmail(email);
+
     }
+
+    const updateProfile = (name,photoURL) => {
+        
+        return currentUser.updateProfile({displayName: name, photoURL: photoURL});
+
+    }
+
 
    
   
@@ -71,6 +75,7 @@ export function AuthProvider({ children }) {
         Signup,
         Login,
         Logout,
+        updateEmail,
         updateProfile
     }
     return (

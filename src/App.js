@@ -9,9 +9,7 @@ import SavedPosts from './components/SavedPosts';
 import UserProfile from './components/UserProfile';
 import CreatePost from './components/CreatePost';
 import DetailedPostView from './components/DetailedPostView';
-import firebase from "firebase/app";
-import axios from 'axios';
-import Sidebar from './components/Sidebar';
+import UpdateUserForm from './components/UserUpdateForm';
 
 function App() {
   const [posts, setPosts ] = React.useState();
@@ -27,23 +25,15 @@ function App() {
         <div className="App">
           
           <Switch>
-            <PrivateRoute exact path="/">
-              <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost}/>
-            </PrivateRoute>
+            <PrivateRoute exact path="/" component={() => <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />}/> 
 
-            <PrivateRoute path="/savedposts" component={SavedPosts}/>
+            <PrivateRoute path="/profile" component={() => <UserProfile setDetailedPost={setDetailedPost}/>}/>
+      
+            <PrivateRoute path="/createpost" component={() => <CreatePost />}/>
+              
+            <PrivateRoute path="/details" component={() => <DetailedPostView detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
 
-            <PrivateRoute path="/profile">
-              <UserProfile setDetailedPost={setDetailedPost}/>
-            </PrivateRoute>
-
-            <PrivateRoute path="/createpost">
-              <CreatePost/>
-            </PrivateRoute>
-
-            <PrivateRoute path="/details">
-              <DetailedPostView detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>
-            </PrivateRoute>
+            <PrivateRoute path="/updateProfile" component={() => <UpdateUserForm />}/>
 
             <Route path="/signup" component={Signup}/>
 

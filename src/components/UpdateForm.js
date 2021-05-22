@@ -2,11 +2,14 @@ import React from 'react'
 import firebase from 'firebase/app'
 import axios from 'axios'
 
+
 function UpdateForm({updatedPost, setMessage}) {
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [category, setCategory] = React.useState("Gaming");
+    
     const [token, setToken] = React.useState();
+
 
    // get the token of the current user to be used in for authenticating the user to use the events api 
    React.useEffect(() => {
@@ -58,6 +61,7 @@ function UpdateForm({updatedPost, setMessage}) {
                                     <option value="Food">Food</option>
                             </select>
                         </div>
+                        
                         <div>
                             <input type="submit" value="post"/>
                         </div>

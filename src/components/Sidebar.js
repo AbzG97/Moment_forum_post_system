@@ -4,7 +4,7 @@ import {Link, Switch, Route, useHistory, useParams, useRouteMatch} from 'react-r
 import styled from 'styled-components';
 
 function Sidebar() {
-    const {Logout} = useAuth();
+    const {Logout, currentUser} = useAuth();
     const history = useHistory();
     const [error, setError] = React.useState('');
 
@@ -23,14 +23,12 @@ function Sidebar() {
     return (
         <StyledMenu>
             <div className="userData">
-                <p>Profile picture</p>
-                <p>Username</p>
+                <img  src={currentUser.photoURL} alt="profile photo"/>
+                <p>{currentUser.displayName}</p>
             </div>
             <ul className="links">
                 <li><Link to="/">Home</Link></li>
-                <li><Link to="/savedposts">Saved posts</Link></li>
                 <li><Link to="/createpost">Create post</Link></li>
-                <li>Notifications</li>
                 <li><Link to="/profile">Profile</Link></li>
                 <li onClick={handleLogout}>Logout</li>
             </ul>
@@ -47,6 +45,10 @@ const StyledMenu = styled.div`
     top: 0;
     left: 0;
     color: white;
+    a {
+        text-decoration: none;
+        color: white;
+    }
     .userData {
         display: flex;
         align-items: center;
@@ -58,6 +60,7 @@ const StyledMenu = styled.div`
         letter-spacing: 4px;
         list-style: none;
         padding: 2rem;
+        width: 75%;
         li {
             margin: 1rem 0rem 1rem 0rem;
             cursor: pointer;
@@ -65,6 +68,9 @@ const StyledMenu = styled.div`
             padding: 0.5rem;
             border-radius: 15px;
             &:hover {
+                a {
+                    color: black;
+                }
                 background-color: white;
                 color: black;
                 font-weight: bold;        

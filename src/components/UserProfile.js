@@ -6,6 +6,7 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import UpdateForm from './UpdateForm'
 import {Alert, Button, ButtonGroup} from 'react-bootstrap'
+import {useAuth} from '../AuthContext'
 
 const UserProfile = ({setDetailedPost}) => {
     
@@ -16,6 +17,7 @@ const UserProfile = ({setDetailedPost}) => {
     const [updateForm, setUpdateForm] = React.useState(false);
     const [updatedPost, setUpdatedPost] = React.useState();
     const [message, setMessage] = React.useState();
+    const {currentUser} = useAuth();
    
    
 
@@ -45,16 +47,17 @@ const UserProfile = ({setDetailedPost}) => {
        <StyledProfile>
            <Sidebar/>
             <div className="profileContainer">
-                <p>Profile picture</p>
-                <p>User name</p>
+                <img src={currentUser.photoURL} alt="profile picture"/>
+                <p>{currentUser.displayName}</p>
+                <p>{currentUser.email}</p>
                 <div className="userStats">
                     <div><p>Posts made </p><span>0</span></div>
                     <div><p>Posts liked </p><span>0</span></div>
                     <div><p>Posts saved </p><span>0</span></div>
                 </div>
                 <div className="buttons">
-                    <button className="updateBtn">Update profile</button>
-                    <button className="deleteBtn">Delete profile</button>
+                    <Link to="/updateProfile"><Button variant="outline-warning">Update profile</Button></Link>
+                    <Button variant="outline-danger">Delete profile</Button>
                 </div>
            </div>
            <div className="postsMade">
@@ -81,7 +84,7 @@ const UserProfile = ({setDetailedPost}) => {
                             }}>Update</Button> / <Button variant="outline-danger" onClick={async () => {
                                 await axios({
                                     method:"DELETE",
-                                    url: `http://localhost:3001/posts/delete/${post._id}`,
+                                    url: `/posts/delete/${post._id}`,
                                     headers: {
                                         'authtoken': token
                                     }
@@ -140,7 +143,7 @@ const StyledProfile = styled.div`
             align-items: center;
             justify-content: space-around;
             margin: 1rem;
-            button {
+            /* button {
                 padding: .5rem;
                 outline: none;
                 background-color: transparent;
@@ -165,7 +168,7 @@ const StyledProfile = styled.div`
                     background-color: red; 
                     color: black;
                 }
-            }
+            } */
         }
     }
     .postsMade {
