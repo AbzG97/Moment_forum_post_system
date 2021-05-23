@@ -109,7 +109,7 @@ const UserProfile = ({setDetailedPost}) => {
 }
 
 const StyledProfile = styled.div`
-    margin-top: 3%;
+    /* margin-top: 3%; */
     margin-left: 22%;
     padding: 1rem;
     

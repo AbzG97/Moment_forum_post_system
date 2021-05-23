@@ -57,6 +57,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow}) => {
                     <p className="title">{post.title}</p>
                     <p className="venue">{post.description}</p>
                     <p>#{post.category}</p>
+                    <p>posted by <strong>{post.postedBy.username}</strong></p>
                     <ButtonGroup>
                         <Link  to={`/details/${post._id}`}><Button variant="outline-primary" onClick={ViewBtnHandler}>View</Button></Link>
                         <Button variant="outline-secondary" onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
@@ -64,7 +65,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow}) => {
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>
-                            <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)}/>
+                            <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
                             <Button type="submit" variant="outline-success">Post comment</Button> 
                         </Form.Group>
                         

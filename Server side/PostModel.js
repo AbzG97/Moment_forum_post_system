@@ -26,8 +26,14 @@ const postSchema = new mongoose.Schema({
     },
     comments: [{
         commentBy: {
-            type:String,
-            required: false
+            userId: {
+                type:String,
+                required: false
+            },
+            username: {
+                type: String,
+                required: true
+            }
         },
         commentDesc: {
             type: String,
@@ -35,8 +41,14 @@ const postSchema = new mongoose.Schema({
         }
     }],
     postedBy: {
-        type: String,
-        required: true
+        userId: {
+            type: String,
+            required: true
+        },
+        username: {
+            type: String,
+            required: true
+        }
     }
 });
 

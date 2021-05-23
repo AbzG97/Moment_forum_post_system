@@ -43,9 +43,10 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                     <h2>{LSData.title}</h2>
                     <h4>{LSData.description}</h4>
                     <p>#{LSData.category}</p>
+                    <p>Post by {LSData.postedBy.username}</p>
                     <ListGroup variant="flush">
                         {LSData.comments.map((comment) => (
-                            <ListGroup.Item>{comment.commentDesc} <strong>by</strong> {comment.commentBy}</ListGroup.Item>
+                            <ListGroup.Item>{comment.commentDesc} <strong>by</strong> {comment.commentBy.username}</ListGroup.Item>
 
                         ))}
                     </ListGroup>

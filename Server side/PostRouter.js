@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost:27017/moments-db', {
 
 
 // get all posts from database
-postRouter.get('/posts',  async (req, res) => {
+postRouter.get('/posts', async (req, res) => {
     // console.log(req.user.uid);
     try {
         const posts = await postModel.find({});
@@ -50,20 +50,18 @@ postRouter.get('/posts/:id',auth,  async (req, res) => {
 
 // create new posts
 postRouter.post('/posts', auth, async (req, res) => {
+    // console.log(req.user);
     const postsData = {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
-        postedBy: req.user.uid
+        "postedBy.userId": req.user.uid,
+        "postedBy.username": req.user.displayName
+
     }
 
 
-    const newposts = new postModel({
-        title: postsData.title,
-        description: postsData.description,
-        category: postsData.category,
-        postedBy: postsData.postedBy
-    });
+    const newposts = new postModel(postsData);
 
     try {
         await newposts.save();
@@ -78,7 +76,7 @@ postRouter.post('/posts', auth, async (req, res) => {
 postRouter.get('/user/profile/myPosts', auth, async(req, res) => {
     console.log(req.user.uid);
     try {
-        const posts = await postModel.find({postedBy: req.user.uid}); // find using the authenticated user id
+        const posts = await postModel.find({"postedBy.userId": req.user.uid}); // find using the authenticated user id
         if(posts.length === 0 ){
             res.status(204).send({message: "you have not posted any posts"});
         }  else {
@@ -133,26 +131,13 @@ postRouter.put('/posts/update/:id', auth, async (req, res) => {
     }
 });
 
-// add a likeBy object which gets the user of who liked this post
-postRouter.post('/posts/like/:id', auth, async (req,res) => {
-    console.log(req.params.id);
-    console.log(req.body.likes);
-    try {
-        const post = await postModel.findById(req.params.id);
-        post.likedBy.push(req.user.uid);
-        await post.save();
-
-
-    } catch (e) {
-
-    }
-});
 
 // add comment to the post
 postRouter.post('/posts/comment/:id', auth, async (req,res) => {
     const data = { 
         commentDesc: req.body.comment,
-        commentBy: req.user.uid
+        "commentBy.userId": req.user.uid,
+        "commentBy.username": req.user.displayName
     }
     try {
         const post = await postModel.findById(req.params.id);
@@ -167,4 +152,25 @@ postRouter.post('/posts/comment/:id', auth, async (req,res) => {
     console.log(req.params.id);
 });
 
+// update the username of all posts and comments made by the user when they update their username
+postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
+    try {
+        const posts = await postModel.find({'postedBy.userId': req.user.uid});
+        posts.map(async (post) => {
+            post.postedBy.username = req.body.username;
+            await post.save();
+        })
+        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user.uid});
+        postsAgain.map(async (post) => {
+            post.comments.map((comment) => {
+                comment.commentBy.username = req.body.username;
+            });
+            await post.save()
+        })
+
+      
+    } catch {
+
+    }
+})
 module.exports = postRouter;

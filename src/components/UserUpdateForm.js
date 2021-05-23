@@ -4,7 +4,8 @@ import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
 import Sidebar from './Sidebar';
-
+import axios from 'axios';
+import firebase from 'firebase/app'
 
 
 
@@ -17,8 +18,14 @@ function UpdateUserForm() {
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
     const {updateProfile, currentUser, updateEmail} = useAuth(); // pulling the signup function from context using the hook
-    
     const history = useHistory();
+
+    // React.useEffect(() => {
+    //     const updateUsernameInDB = async () => {
+           
+    //     }
+    //     updateUsernameInDB();
+    // }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,8 +36,22 @@ function UpdateUserForm() {
                 setError("");
                 setLoading(true);
                 await updateEmail(email || currentUser.email); // value from forms
-                await updateProfile(name || currentUser.name, photoURL || currentUser.photoURL);
+                await updateProfile(name || currentUser.displayName, photoURL || currentUser.photoURL);
                 history.push('/');
+
+                const decoded = await firebase.auth().currentUser.getIdToken(true);
+                await axios({
+                    method: "PUT",
+                    url:"/posts/postedBy/update",
+                    data: {
+                        username: name
+                    },
+                    headers: {
+                        'authtoken': decoded
+                    }
+                });
+                
+
                 
             } catch {
                 setError("failed to update the account");

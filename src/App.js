@@ -25,7 +25,12 @@ function App() {
         <div className="App">
           
           <Switch>
-            <PrivateRoute exact path="/" component={() => <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />}/> 
+            <PrivateRoute exact path="/" component={() => <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />} /> 
+
+            {/* <PrivateRoute exact path="/">
+              <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />
+            </PrivateRoute> */}
+
 
             <PrivateRoute path="/profile" component={() => <UserProfile setDetailedPost={setDetailedPost}/>}/>
       
