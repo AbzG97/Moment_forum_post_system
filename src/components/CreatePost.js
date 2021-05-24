@@ -66,7 +66,7 @@ function CreatePost() {
                         <Form.Group style={{width: "50%"}}>
                             <Form.Label htmlFor="categories">Select post category:</Form.Label>
                                 <Form.Control as="select" name="categories" id="categories" onChange={(e) => setCategory(e.target.value)}>
-                                    <option value="Gaming" selected>Gaming</option>
+                                    <option value="Gaming">Gaming</option>
                                     <option value="Programming">Programming</option>
                                     <option value="Science">Science</option>
                                     <option value="Food">Food</option>

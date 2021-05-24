@@ -25,21 +25,17 @@ function App() {
         <div className="App">
           
           <Switch>
-            <PrivateRoute exact path="/" component={() => <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />} /> 
-
-            {/* <PrivateRoute exact path="/">
-              <Dashboard posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />
-            </PrivateRoute> */}
-
-
-            <PrivateRoute path="/profile" component={() => <UserProfile setDetailedPost={setDetailedPost}/>}/>
       
-            <PrivateRoute path="/createpost" component={() => <CreatePost />}/>
-              
-            <PrivateRoute path="/details" component={() => <DetailedPostView detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
+            <PrivateRoute exact path="/" render={(props) => <Dashboard {...props} posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} />} /> 
+      
+            <PrivateRoute path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
+      
+            <PrivateRoute path="/createpost" render={(props) => <CreatePost  {...props}/>}/>
+        
+            <PrivateRoute path="/details" render={(props) => <DetailedPostView {...props} detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
 
-            <PrivateRoute path="/updateProfile" component={() => <UpdateUserForm />}/>
-
+            <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>    
+            
             <Route path="/signup" component={Signup}/>
 
             <Route path="/login" component={Login}/>

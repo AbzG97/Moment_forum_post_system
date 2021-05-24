@@ -5,10 +5,10 @@ import {useAuth} from '../AuthContext'
 const PrivateRoute = ({component: Component, ...rest}) => {
     const {currentUser} = useAuth();
     return (
-        <Route {...rest} render={props => {
-            // render a component if there is a current user
-            return currentUser ? <Component {...rest} {...props}/> : <Redirect to="/login"/> }}
-        ></Route>
+        <Route {...rest} render={props => (
+            currentUser ? Component ? <Component {...props}/> :
+            rest.render(props) : <Redirect to="/login"/>
+        )}/>
     )
 }
 
