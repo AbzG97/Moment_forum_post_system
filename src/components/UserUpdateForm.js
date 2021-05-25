@@ -9,6 +9,7 @@ import firebase from 'firebase/app'
 
 
 
+
 function UpdateUserForm() {
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
@@ -19,13 +20,6 @@ function UpdateUserForm() {
     const [loading, setLoading] = React.useState(false);
     const {updateProfile, currentUser, updateEmail} = useAuth(); // pulling the signup function from context using the hook
     const history = useHistory();
-
-    // React.useEffect(() => {
-    //     const updateUsernameInDB = async () => {
-           
-    //     }
-    //     updateUsernameInDB();
-    // }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

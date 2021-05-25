@@ -1,12 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import Sidebar from './Sidebar'
-import {Link} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import UpdateForm from './UpdateForm'
-import {Alert, Button, ButtonGroup} from 'react-bootstrap'
+import {Alert, Button, ButtonGroup, Modal} from 'react-bootstrap'
 import {useAuth} from '../AuthContext'
+import reactDom from 'react-dom'
+
 
 const UserProfile = ({setDetailedPost}) => {
     
@@ -17,7 +19,11 @@ const UserProfile = ({setDetailedPost}) => {
     const [updateForm, setUpdateForm] = React.useState(false);
     const [updatedPost, setUpdatedPost] = React.useState();
     const [message, setMessage] = React.useState();
-    const {currentUser} = useAuth();
+    const {currentUser, deleteProfile} = useAuth();
+    const [showModal, setShowModal] = React.useState();
+    const [deleteUserPosts, setDeleteUserPosts] = React.useState(false);
+
+    const history = useHistory();
    
    
 
@@ -41,68 +47,108 @@ const UserProfile = ({setDetailedPost}) => {
         getToken();
         setLoading(false);
     }, [deleted]); // user posts are retreived from database everytime a post is deleted
- 
+
+
    
+    const handleShowModal = () => setShowModal(true); 
+    const handleCloseModal = () => setShowModal(false); 
+
+    const handelUserDelete = async () => {
+        await deleteProfile();
+         await axios({
+            method: "delete",
+            url: "/posts/cascadeDelete",
+            data: {
+                uid: currentUser.uid
+            }
+        }); 
+        history.push("/login");
+       
+    } 
+
+   
+
+
     return (
-       <StyledProfile>
-           <Sidebar/>
-            <div className="profileContainer">
-                <img src={currentUser.photoURL} alt="profile picture"/>
-                <p>{currentUser.displayName}</p>
-                <p>{currentUser.email}</p>
-                <div className="userStats">
-                    <div><p>Posts made </p><span>0</span></div>
-                    <div><p>Posts liked </p><span>0</span></div>
-                    <div><p>Posts saved </p><span>0</span></div>
-                </div>
-                <div className="buttons">
-                    <Link to="/updateProfile"><Button variant="outline-warning">Update profile</Button></Link>
-                    <Button variant="outline-danger">Delete profile</Button>
-                </div>
-           </div>
-           <div className="postsMade">
-               <h2>Posts made</h2>
-               <table>
-                   <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Desciption</th>
-                            <th>Category</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                   <tbody>
-                    {!loading && postsMadeByUser && postsMadeByUser.map((post) => (
-                        <tr key={post._id}>
-                            <td>{post.title}</td>
-                            <td>{post.description}</td>
-                            <td>{post.category}</td>
-                            <td>
-                            <Button variant="outline-warning" onClick={() => {
-                                setUpdateForm(!updateForm)
-                                setUpdatedPost(post);
-                            }}>Update</Button> / <Button variant="outline-danger" onClick={async () => {
-                                await axios({
-                                    method:"DELETE",
-                                    url: `/posts/delete/${post._id}`,
-                                    headers: {
-                                        'authtoken': token
-                                    }
-                                });
-                                SetDeleted(!deleted);
+        <>
+        
 
-                            }}>Delete</Button> / <Link to={`/details/${post._id}`}><Button variant="outline-info" onClick={() =>
-                                { localStorage.setItem('detailedPost', JSON.stringify(post));
-                            setDetailedPost(post)}}>View</Button></Link> </td>
-                        </tr>
-                                
-                    ))}
-                </tbody>
-               </table>
-           </div>
-           {updateForm && <UpdateForm updatedPost={updatedPost} setMessage={setMessage} />}
+        <StyledProfile>
+            <Sidebar/>
+                <div className="profileContainer">
+                    <img  src={currentUser.photoURL} alt="profile photo"/>   
+                    <p>{currentUser.displayName}</p>
+                    <p>{currentUser.email}</p>
+                    <div className="userStats">
+                        <div><p>Posts made </p><span>0</span></div>
+                        <div><p>Posts liked </p><span>0</span></div>
+                        <div><p>Posts saved </p><span>0</span></div>
+                    </div>
+                    <div className="buttons">
+                        <Link to="/updateProfile"><Button variant="outline-warning">Update profile</Button></Link>
+                        <Button onClick={handleShowModal} variant="outline-danger">Delete profile</Button>
+                    </div>
+            </div>
+            <div className="postsMade">
+                <h2>Posts made</h2>
+                <table>
+                    <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Desciption</th>
+                                <th>Category</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                        {!loading && postsMadeByUser && postsMadeByUser.map((post) => (
+                            <tr key={post._id}>
+                                <td>{post.title}</td>
+                                <td>{post.description}</td>
+                                <td>{post.category}</td>
+                                <td>
+                                <Button variant="outline-warning" onClick={() => {
+                                    setUpdateForm(!updateForm)
+                                    setUpdatedPost(post);
+                                }}>Update</Button> / <Button variant="outline-danger" onClick={async () => {
+                                    await axios({
+                                        method:"DELETE",
+                                        url: `/posts/delete/${post._id}`,
+                                        headers: {
+                                            'authtoken': token
+                                        }
+                                    });
+                                    SetDeleted(!deleted);
 
-       </StyledProfile>
+                                }}>Delete</Button> / <Link to={`/details/${post._id}`}><Button variant="outline-info" onClick={() =>
+                                    { localStorage.setItem('detailedPost', JSON.stringify(post));
+                                setDetailedPost(post)}}>View</Button></Link> </td>
+                            </tr>
+                                    
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            {updateForm && <UpdateForm updatedPost={updatedPost} setMessage={setMessage} />}
+
+           
+        </StyledProfile>
+        <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header>
+            <Modal.Title>Profile deletion</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure that you want to delete your profile ?</Modal.Body>
+            <Modal.Footer>
+            <Button variant="outline-secondary" onClick={handleCloseModal}>
+                Cancel
+            </Button>
+            <Button variant="outline-danger" onClick={handelUserDelete}>
+                Confirm deletetion
+            </Button>
+            </Modal.Footer>
+        </Modal>
+            
+        </>
             
         
     )
