@@ -172,5 +172,21 @@ postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
     } catch {
 
     }
-})
+});
+
+// cascade delete all of the posts and comments made by a user that deleted their profile
+postRouter.delete('/posts/cascadeDelete', async (req, res) => {
+    try {
+        // find all posts made by the deleted using their id
+        const posts = await postModel.find({'postedBy.userId' : req.body.uid});
+        posts.map(async (post) => {
+            console.log(post)
+            await post.delete(); // delete each post made by the user
+        });
+
+
+    } catch {
+
+    }
+});
 module.exports = postRouter;
