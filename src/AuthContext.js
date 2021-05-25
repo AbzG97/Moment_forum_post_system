@@ -2,7 +2,7 @@ import React from 'react'
 import {auth} from './firebase'
 import firebase from 'firebase/app'
 
-
+// this just got added
 const AuthContext = React.createContext()
 
 // creating a custom to hook to use AuthContext
