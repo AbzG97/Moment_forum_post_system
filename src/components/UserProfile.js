@@ -55,7 +55,7 @@ const UserProfile = ({setDetailedPost}) => {
 
     const handelUserDelete = async () => {
         await deleteProfile();
-         await axios({
+        await axios({
             method: "delete",
             url: "/posts/cascadeDelete",
             data: {
