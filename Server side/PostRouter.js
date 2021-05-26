@@ -184,6 +184,15 @@ postRouter.delete('/posts/cascadeDelete', async (req, res) => {
             await post.delete(); // delete each post made by the user
         });
 
+        // find all the comments made by the deleted user using their id
+        const postsAgain = await postModel.find({'comments.commentBy.userId': req.body.uid});
+        postsAgain.map(async (post) => {
+            const filtered = post.comments.filter((state) => state.commentBy.userId !== req.body.uid);
+            console.log(filtered);
+            post.comments = filtered;
+            await post.save();
+        });
+
 
     } catch {
 
