@@ -185,6 +185,7 @@ postRouter.delete('/posts/cascadeDelete', async (req, res) => {
         });
 
         // find all the comments made by the deleted user using their id
+        // added test comment from my_auth_system branch
         const postsAgain = await postModel.find({'comments.commentBy.userId': req.body.uid});
         postsAgain.map(async (post) => {
             const filtered = post.comments.filter((state) => state.commentBy.userId !== req.body.uid);
