@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from '../AuthContext'
-import {Link, Switch, Route, useHistory, useParams, useRouteMatch} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components';
 
 function Sidebar() {
@@ -23,7 +23,7 @@ function Sidebar() {
     return (
         <StyledMenu>
             <div className="userData">
-                <img  src={currentUser.photoURL} alt="profile photo"/>
+                <img  src={currentUser.photoURL} alt="profile"/>
                 <p>{currentUser.displayName}</p>
             </div>
             <ul className="links">

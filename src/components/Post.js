@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faBookmark, faComment } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'

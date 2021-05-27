@@ -1,11 +1,9 @@
 import React from 'react'
 import Signup from './components/Signup'
-import {AuthProvider} from './AuthContext'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
-import SavedPosts from './components/SavedPosts';
 import UserProfile from './components/UserProfile';
 import CreatePost from './components/CreatePost';
 import DetailedPostView from './components/DetailedPostView';

@@ -66,6 +66,10 @@ export function AuthProvider({ children }) {
 
     }
 
+    const updatePassword = (password) => {
+        return currentUser.updatePassword(password);
+    }
+
     const deleteProfile = () => {
         return currentUser.delete();
     }
@@ -81,7 +85,8 @@ export function AuthProvider({ children }) {
         Logout,
         updateEmail,
         updateProfile,
-        deleteProfile
+        deleteProfile,
+        updatePassword
     }
     return (
         // this component will contain data of the current user to be used anywhere in the app

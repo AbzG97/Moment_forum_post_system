@@ -162,13 +162,9 @@ postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
         })
         const postsAgain = await postModel.find({'comments.commentBy.userId': req.user.uid});
         postsAgain.map(async (post) => {
-            post.comments.map((comment) => {
-                comment.commentBy.username = req.body.username;
-            });
+            post.comments.map((comment) => comment.commentBy.username = req.body.username);
             await post.save()
-        })
-
-      
+        });
     } catch {
 
     }

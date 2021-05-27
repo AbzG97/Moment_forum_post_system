@@ -5,9 +5,9 @@ import {Link, useHistory} from 'react-router-dom'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import UpdateForm from './UpdateForm'
-import {Alert, Button, ButtonGroup, Modal} from 'react-bootstrap'
+import {Button, Modal, Alert} from 'react-bootstrap'
 import {useAuth} from '../AuthContext'
-import reactDom from 'react-dom'
+
 
 
 const UserProfile = ({setDetailedPost}) => {
@@ -18,10 +18,8 @@ const UserProfile = ({setDetailedPost}) => {
     const [deleted, SetDeleted] = React.useState(false);
     const [updateForm, setUpdateForm] = React.useState(false);
     const [updatedPost, setUpdatedPost] = React.useState();
-    const [message, setMessage] = React.useState();
     const {currentUser, deleteProfile} = useAuth();
     const [showModal, setShowModal] = React.useState();
-    const [deleteUserPosts, setDeleteUserPosts] = React.useState(false);
 
     const history = useHistory();
    
@@ -49,11 +47,16 @@ const UserProfile = ({setDetailedPost}) => {
     }, [deleted]); // user posts are retreived from database everytime a post is deleted
 
 
-   
+    // delete profile modal
     const handleShowModal = () => setShowModal(true); 
     const handleCloseModal = () => setShowModal(false); 
 
-    const handelUserDelete = async () => {
+    // posts update for modal
+    const handleShowUpdateForm = () => setUpdateForm(true); 
+    const handleCloseUpdateForm = () => setUpdateForm(false); 
+
+    // deletes the comments and posts if the user decides to deletes their profile
+    const handelUserPostsDelete = async () => {
         await deleteProfile();
         await axios({
             method: "delete",
@@ -62,12 +65,8 @@ const UserProfile = ({setDetailedPost}) => {
                 uid: currentUser.uid
             }
         }); 
-        history.push("/login");
-       
+        history.push("/login");       
     } 
-
-   
-
 
     return (
         <>
@@ -75,20 +74,17 @@ const UserProfile = ({setDetailedPost}) => {
 
         <StyledProfile>
             <Sidebar/>
+        
+
                 <div className="profileContainer">
-                    <img  src={currentUser.photoURL} alt="profile photo"/>   
+                    <img  src={currentUser.photoURL} alt="profile"/>   
                     <p>{currentUser.displayName}</p>
                     <p>{currentUser.email}</p>
-                    <div className="userStats">
-                        <div><p>Posts made </p><span>0</span></div>
-                        <div><p>Posts liked </p><span>0</span></div>
-                        <div><p>Posts saved </p><span>0</span></div>
-                    </div>
                     <div className="buttons">
                         <Link to="/updateProfile"><Button variant="outline-warning">Update profile</Button></Link>
                         <Button onClick={handleShowModal} variant="outline-danger">Delete profile</Button>
                     </div>
-            </div>
+                </div>
             <div className="postsMade">
                 <h2>Posts made</h2>
                 <table>
@@ -108,7 +104,7 @@ const UserProfile = ({setDetailedPost}) => {
                                 <td>{post.category}</td>
                                 <td>
                                 <Button variant="outline-warning" onClick={() => {
-                                    setUpdateForm(!updateForm)
+                                    handleShowUpdateForm();
                                     setUpdatedPost(post);
                                 }}>Update</Button> / <Button variant="outline-danger" onClick={async () => {
                                     await axios({
@@ -129,8 +125,6 @@ const UserProfile = ({setDetailedPost}) => {
                     </tbody>
                 </table>
             </div>
-            {updateForm && <UpdateForm updatedPost={updatedPost} setMessage={setMessage} />}
-
            
         </StyledProfile>
         <Modal show={showModal} onHide={handleCloseModal}>
@@ -142,10 +136,23 @@ const UserProfile = ({setDetailedPost}) => {
             <Button variant="outline-secondary" onClick={handleCloseModal}>
                 Cancel
             </Button>
-            <Button variant="outline-danger" onClick={handelUserDelete}>
+            <Button variant="outline-danger" onClick={handelUserPostsDelete}>
                 Confirm deletetion
             </Button>
             </Modal.Footer>
+        </Modal>
+
+        <Modal show={updateForm} onHide={handleCloseUpdateForm}>
+            <Modal.Header>
+                <Modal.Title>Update form</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <UpdateForm updatedPost={updatedPost}/>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={handleCloseUpdateForm}>Cancel</Button>
+            </Modal.Footer>
+            
         </Modal>
             
         </>
@@ -189,32 +196,6 @@ const StyledProfile = styled.div`
             align-items: center;
             justify-content: space-around;
             margin: 1rem;
-            /* button {
-                padding: .5rem;
-                outline: none;
-                background-color: transparent;
-                border-radius: 12px;
-                font-family: 'Barlow Condensed', sans-serif;
-                letter-spacing: 3px;
-                transition: all .25s ease-in-out;
-                cursor: pointer;
-            }
-            .updateBtn {
-                border: 2px solid yellow;
-                color: yellow;
-                &:hover {
-                    background-color: yellow; 
-                    color: black;
-                }
-            }
-            .deleteBtn {
-                border: 2px solid red;
-                color: red;
-                &:hover {
-                    background-color: red; 
-                    color: black;
-                }
-            } */
         }
     }
     .postsMade {

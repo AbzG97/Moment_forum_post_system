@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Post from './Post';
 import Sidebar from './Sidebar';
 import {Alert} from 'react-bootstrap'
-import {useAuth} from '../AuthContext'
+
 
 
 const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {

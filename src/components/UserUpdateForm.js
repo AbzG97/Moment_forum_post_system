@@ -1,6 +1,6 @@
 import React from 'react'
 import {useAuth} from '../AuthContext'
-import {Link, useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
 import Sidebar from './Sidebar';
@@ -18,19 +18,24 @@ function UpdateUserForm() {
     const [confPassword, setConfPassword] = React.useState("");
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const {updateProfile, currentUser, updateEmail} = useAuth(); // pulling the signup function from context using the hook
+    
+    const {updateProfile, currentUser, updateEmail, updatePassword} = useAuth(); // pulling the signup function from context using the hook
     const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // if (password !== confPassword){
-        //     return setError("passwords must match");
-        // } 
             try {
                 setError("");
                 setLoading(true);
+                if(password && password !== confPassword){
+                    return setError("passwords must match");
+                }
                 await updateEmail(email || currentUser.email); // value from forms
                 await updateProfile(name || currentUser.displayName, photoURL || currentUser.photoURL);
+                if(password) {
+                    await updatePassword(password)
+                }
+    
                 history.push('/');
 
                 const decoded = await firebase.auth().currentUser.getIdToken(true);
