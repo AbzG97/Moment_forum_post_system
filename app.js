@@ -14,11 +14,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(postRouter);
-app.use(express.static(path.join(__dirname,'Client','build')));
 
-app.get("*", (req,res) => {
-  res.sendFile(path.join(__dirname, "Client","build","index.html"));
-});
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname+'/Client/build')));
+} 
+
+// app.get("*", (req,res) => {
+//   res.sendFile(path.join(__dirname, "Client","build","index.html"));
+// });
 
 
 const port = process.env.PORT || 3001;
