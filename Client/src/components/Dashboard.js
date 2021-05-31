@@ -8,7 +8,7 @@ import {Alert} from 'react-bootstrap'
 
 
 
-const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
+const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, setSavedPosts}) => {
     const [loading, setLoading] = React.useState();
     const [message, setMessage] = React.useState();
     const [show, setShow] = React.useState(false);
@@ -33,6 +33,8 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
         setLoading(false);
     }, []);
 
+    
+
     React.useEffect(() => {
         const timeId = setTimeout(() => {
             // After 3 seconds set the show value to false
@@ -54,7 +56,8 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
                     {!loading && posts && posts.map((post) =>(
                         <Post key={post._id} post={post} detailedPost={detailedPost} 
                         setDetailedPost={setDetailedPost} message={message} 
-                        setMessage={setMessage} setShow={setShow}/>
+                        setMessage={setMessage} setShow={setShow} savedPosts={savedPosts} 
+                        setSavedPosts={setSavedPosts}/>
                     ))} 
                 </div>
             </EventsContainerStyle> 

@@ -29,6 +29,7 @@ function Sidebar() {
             <ul className="links">
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/createpost">Create post</Link></li>
+                <li><Link to="/savedposts">Saved posts</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
                 <li onClick={handleLogout}>Logout</li>
             </ul>

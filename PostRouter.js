@@ -182,4 +182,58 @@ postRouter.delete('/posts/cascadeDelete', async (req, res) => {
     }
 });
 
+// save route will add a an object which will just be a userId 
+// to the selected post (post id) in an array of all users that saved that post
+postRouter.post('/posts/:id/save', auth, async(req, res) => {
+    try {
+        const post = await postModel.findById(req.params.id);
+        if(!post) {
+            res.status(404).send({message: "can't save a post that doesn't exist"});
+        }
+        post.saves.push({savedBy: req.user.uid}); // save the current user id to saves array
+        await post.save();
+        res.status(200).send({message: "Save successful"});
+        
+
+    } catch (e) {
+        res.status(500).send({message:"server error"});
+    }
+});
+
+// remove saved post 
+postRouter.post('/posts/:id/unsave', auth, async(req, res) => {
+    try {
+        const post = await postModel.findById(req.params.id);
+        if(!post) {
+            res.status(404).send({message: "can't save a post that doesn't exist"});
+        }
+        const index = post.saves.findIndex(save => save.savedBy === req.user.uid);
+        // console.log(index);
+        post.saves.splice(index, 1);
+        await post.save();
+        // const filteredOut= post.saves.
+        // console.log(filteredOut);
+        
+        // post.saves.push({savedBy: req.user.uid}); // save the current user id to saves array
+        // await post.save();
+        res.status(200).send({message: "Save successful"});
+        
+
+    } catch (e) {
+        res.status(500).send({message:"server error"});
+    }
+});
+
+// get all of the posts that have been saved by the user
+postRouter.get('/posts/profile/savedPosts', auth, async(req, res) => {
+    try {
+    
+        const savedPosts = await postModel.find({"saves.savedBy": req.user.uid});
+        res.status(200).send({posts: savedPosts});
+
+
+    } catch (e) {
+        res.status(500).send({message: "server error"});
+    }
+});
 module.exports = postRouter;
