@@ -5,15 +5,13 @@ import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form } from 'react-bootstrap'
 import {ButtonGroup, Button} from "@material-ui/core"
-import { useAuth } from '../AuthContext'
 
-const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
+const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
     const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
-    const [saveStatus, setSaveStatus] = React.useState(false);
-    const {currentUser} = useAuth();
-    const [liked, setLiked] = React.useState(false);
-    const [likes, setLikes] = React.useState(post.likes);
+    const [message, setMessage] = React.useState("");
+    const [show, setShow] = React.useState();
+   
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
      // get the token of the current user to be used in for authenticating the user to use the posts api 
      React.useEffect(() => {
@@ -26,16 +24,6 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
         getToken();
     }, []);
 
-    // check the status of a post
-    React.useState(() => {
-        savedPosts.map((saved) => {
-            if(saved._id === post._id){
-                setSaveStatus("saved");
-            }
-        })
-
-    }, [savedPosts])
-
     const PostComment = async (e) => {
         e.preventDefault();
         setMessage("comment posted");
@@ -45,7 +33,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
             const decoded = await firebase.auth().currentUser.getIdToken(true);
             await axios({
                 method: "POST",
-                url: `/posts/comment/${post._id}`,
+                url: `/posts/comment/${savedPost._id}`,
                 data: {
                     comment: comment
                 },
@@ -57,33 +45,33 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
         
     }
 
-    // save the chosen post 
-    const savePost = async () => {
+    // unsave the chosen savedPost 
+    const unsavePost = async () => {
         if(firebase.auth().currentUser){
             const decoded = await firebase.auth().currentUser.getIdToken(true);
             await axios({
                 method: "POST",
-                url: `/posts/${post._id}/save`,
+                url: `/posts/${savedPost._id}/unsave`,
                 headers: {
                     'authtoken': decoded
                 }
             });
-            setSaveStatus(true);
         }
     }
 
 
     const ViewBtnHandler = async () => {
-       localStorage.setItem('detailedPost', JSON.stringify(post));
-       setDetailedPost(post);
+       localStorage.setItem('detailedPost', JSON.stringify(savedPost));
+       setDetailedPost(savedPost);
     }
+
 
     const likePost = async () => {
         if(firebase.auth().currentUser){
             const decoded = await firebase.auth().currentUser.getIdToken(true);
             await axios({
                 method: "POST",
-                url: `/posts/${post._id}/like`,
+                url: `/posts/${savedPost._id}/like`,
                 headers: {
                     'authtoken': decoded
                 }
@@ -92,25 +80,21 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
         
     }
 
-
-  
-   
     return (
         <EventCard>
             <div className="container">
                 <div className="data">
-                    <p>{saveStatus ? "saved" : "not saved"}</p>
-                    <p className="title">{post.title}</p>
-                    <p className="venue">{post.description}</p>
-                    <p>#{post.category}</p>
-                    <p>posted by <strong>{post.postedBy.username}</strong></p>
+                    <p className="title">{savedPost.title}</p>
+                    <p className="venue">{savedPost.description}</p>
+                    <p>#{savedPost.category}</p>
+                    <p>posted by <strong>{savedPost.postedBy.username}</strong></p>
                     <ButtonGroup color="primary" variant="text">
                         <Button onClick={ViewBtnHandler}>
-                            <Link to={`/details/${post._id}`}>View</Link>
+                            <Link to={`/details/${savedPost._id}`}>View</Link>
                         </Button>
-                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={currentUser ? false : true}>Comment</Button>
-                        <Button onClick={savePost} disabled={saveStatus || !currentUser ? true : false} >Save</Button>
-                        <Button onClick={likePost}>Like /  {post.likes}</Button>
+                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
+                        <Button onClick={unsavePost}>Unsave</Button>
+                        <Button onClick={likePost}>Like /  {savedPost.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>
@@ -212,4 +196,4 @@ const EventCard = styled.div`
  
 `
 
-export default Post;
+export default SavedPost;

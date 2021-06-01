@@ -41,7 +41,15 @@ const postSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }
+    },
+    saves:[
+            {
+            savedBy: {
+                type: String // user id 
+            }
+        }
+    ],
+    likes: Number
 });
 
 const postModel = mongoose.model('Post', postSchema);

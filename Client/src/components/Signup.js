@@ -136,7 +136,7 @@ const StyledSignup = styled.div`
                     cursor: pointer;
                     outline: none;
                     background-color: transparent;
-                    width: 35%;
+                    width: 50%;
                     border-radius: 10px;
                     letter-spacing: 2px;
                     border: 2px solid lightseagreen;

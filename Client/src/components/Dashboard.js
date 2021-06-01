@@ -8,7 +8,7 @@ import {Alert} from 'react-bootstrap'
 
 
 
-const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
+const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, setSavedPosts}) => {
     const [loading, setLoading] = React.useState();
     const [message, setMessage] = React.useState();
     const [show, setShow] = React.useState(false);
@@ -18,20 +18,31 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
         setLoading(true);
         const GetPosts = async () => {
             if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
+                const decoded = await firebase.auth().currentUser.getIdToken(true) || null;
                 const respoonse = await axios({
                 method: "get",
                 url: "/posts",
                 headers : {
-                    'authtoken': decoded
+                    'authtoken': decoded || null
                     }
                 });
+                // user isn't logged in
+                setPosts(respoonse.data.posts);
+            } else {
+                const respoonse = await axios({
+                    method: "get",
+                    url: "/posts",
+                });
+                // user isn't logged in
                 setPosts(respoonse.data.posts);
             }
+            
         }
         GetPosts();
         setLoading(false);
-    }, []);
+    }, [posts]);
+
+    
 
     React.useEffect(() => {
         const timeId = setTimeout(() => {
@@ -54,7 +65,8 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost}) => {
                     {!loading && posts && posts.map((post) =>(
                         <Post key={post._id} post={post} detailedPost={detailedPost} 
                         setDetailedPost={setDetailedPost} message={message} 
-                        setMessage={setMessage} setShow={setShow}/>
+                        setMessage={setMessage} setShow={setShow} savedPosts={savedPosts} 
+                        setSavedPosts={setSavedPosts}/>
                     ))} 
                 </div>
             </EventsContainerStyle> 
