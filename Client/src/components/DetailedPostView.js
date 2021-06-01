@@ -27,6 +27,12 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                     }
                 })
                 setLSData(response.data.post);
+            } else {
+                const response = await axios({
+                    method: "GET",
+                    url: `/posts/${parsed._id}`,
+                })
+                setLSData(response.data.post);
             }
         }
         GetPost();
@@ -43,6 +49,7 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                     <h2>{LSData.title}</h2>
                     <h4>{LSData.description}</h4>
                     <p>#{LSData.category}</p>
+                    <p>Likes: {LSData.likes}</p>
                     <p>Post by {LSData.postedBy.username}</p>
                     <ListGroup variant="flush">
                         {LSData.comments.map((comment) => (

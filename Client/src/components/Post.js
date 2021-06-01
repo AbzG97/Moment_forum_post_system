@@ -5,12 +5,15 @@ import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form } from 'react-bootstrap'
 import {ButtonGroup, Button} from "@material-ui/core"
+import { useAuth } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
     const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
     const [saveStatus, setSaveStatus] = React.useState(false);
-   
+    const {currentUser} = useAuth();
+    const [liked, setLiked] = React.useState(false);
+    const [likes, setLikes] = React.useState(post.likes);
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
      // get the token of the current user to be used in for authenticating the user to use the posts api 
      React.useEffect(() => {
@@ -75,6 +78,23 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
        setDetailedPost(post);
     }
 
+    const likePost = async () => {
+        if(firebase.auth().currentUser){
+            const decoded = await firebase.auth().currentUser.getIdToken(true);
+            await axios({
+                method: "POST",
+                url: `/posts/${post._id}/like`,
+                headers: {
+                    'authtoken': decoded
+                }
+            });
+        }
+        
+    }
+
+
+  
+   
     return (
         <EventCard>
             <div className="container">
@@ -88,8 +108,9 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                         <Button onClick={ViewBtnHandler}>
                             <Link to={`/details/${post._id}`}>View</Link>
                         </Button>
-                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
-                        <Button onClick={savePost} disabled={saveStatus} >Save</Button>
+                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={currentUser ? false : true}>Comment</Button>
+                        <Button onClick={savePost} disabled={saveStatus || !currentUser ? true : false} >Save</Button>
+                        <Button onClick={likePost}>Like /  {post.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>

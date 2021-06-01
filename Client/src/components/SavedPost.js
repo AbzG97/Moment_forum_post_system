@@ -65,6 +65,21 @@ const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
        setDetailedPost(savedPost);
     }
 
+
+    const likePost = async () => {
+        if(firebase.auth().currentUser){
+            const decoded = await firebase.auth().currentUser.getIdToken(true);
+            await axios({
+                method: "POST",
+                url: `/posts/${savedPost._id}/like`,
+                headers: {
+                    'authtoken': decoded
+                }
+            });
+        }
+        
+    }
+
     return (
         <EventCard>
             <div className="container">
@@ -79,6 +94,7 @@ const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
                         </Button>
                         <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
                         <Button onClick={unsavePost}>Unsave</Button>
+                        <Button onClick={likePost}>Like /  {savedPost.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>

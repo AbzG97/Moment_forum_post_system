@@ -26,7 +26,7 @@ function App() {
           
           <Switch>
       
-            <PrivateRoute exact path="/" render={(props) => <Dashboard {...props} posts={posts} 
+            <Route exact path="/" render={(props) => <Dashboard {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} />} /> 
       
             <PrivateRoute path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
@@ -36,7 +36,7 @@ function App() {
             <PrivateRoute path="/savedposts" render={(props) => <SavedPosts  {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} /> }/>
         
-            <PrivateRoute path="/details" render={(props) => <DetailedPostView {...props} detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
+            <Route path="/details" render={(props) => <DetailedPostView {...props} detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
 
             <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>    
             

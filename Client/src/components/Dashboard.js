@@ -18,20 +18,29 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, 
         setLoading(true);
         const GetPosts = async () => {
             if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
+                const decoded = await firebase.auth().currentUser.getIdToken(true) || null;
                 const respoonse = await axios({
                 method: "get",
                 url: "/posts",
                 headers : {
-                    'authtoken': decoded
+                    'authtoken': decoded || null
                     }
                 });
+                // user isn't logged in
+                setPosts(respoonse.data.posts);
+            } else {
+                const respoonse = await axios({
+                    method: "get",
+                    url: "/posts",
+                });
+                // user isn't logged in
                 setPosts(respoonse.data.posts);
             }
+            
         }
         GetPosts();
         setLoading(false);
-    }, []);
+    }, [posts]);
 
     
 

@@ -24,7 +24,7 @@ postRouter.get('/posts', async (req, res) => {
 })
 
 // get a single post from database
-postRouter.get('/posts/:id',auth,  async (req, res) => {
+postRouter.get('/posts/:id',  async (req, res) => {
     try {
         const post = await postModel.findById(req.params.id);
         if(post.length === 0){
@@ -46,7 +46,8 @@ postRouter.post('/posts', auth, async (req, res) => {
         description: req.body.description,
         category: req.body.category,
         "postedBy.userId": req.user.uid,
-        "postedBy.username": req.user.displayName
+        "postedBy.username": req.user.displayName,
+        likes: 0
 
     }
     const newposts = new postModel(postsData);
@@ -208,14 +209,8 @@ postRouter.post('/posts/:id/unsave', auth, async(req, res) => {
             res.status(404).send({message: "can't save a post that doesn't exist"});
         }
         const index = post.saves.findIndex(save => save.savedBy === req.user.uid);
-        // console.log(index);
         post.saves.splice(index, 1);
         await post.save();
-        // const filteredOut= post.saves.
-        // console.log(filteredOut);
-        
-        // post.saves.push({savedBy: req.user.uid}); // save the current user id to saves array
-        // await post.save();
         res.status(200).send({message: "Save successful"});
         
 
@@ -236,4 +231,18 @@ postRouter.get('/posts/profile/savedPosts', auth, async(req, res) => {
         res.status(500).send({message: "server error"});
     }
 });
+
+// like post request 
+postRouter.post('/posts/:id/like', auth, async(req, res) => {
+    try {
+        const post = await postModel.findById(req.params.id);
+        post.likes += 1;
+        res.status(200).send({message: "post liked"});
+        await post.save();
+
+
+    } catch (e) {
+        res.status(500).send({message: "server error"});
+    }
+})
 module.exports = postRouter;
