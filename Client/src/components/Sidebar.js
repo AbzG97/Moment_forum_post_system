@@ -31,7 +31,7 @@ function Sidebar() {
                 <li><Link to="/createpost">Create post</Link></li>
                 <li><Link to="/savedposts">Saved posts</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
-                <li onClick={handleLogout}>{currentUser ? "Logout" : ""}</li>
+                {currentUser ?  <li onClick={handleLogout}>Logout</li> : <li><Link to="login">Login</Link></li>}
             </ul>
             
         </StyledMenu>
