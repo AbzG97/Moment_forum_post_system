@@ -1,5 +1,4 @@
-**# Moments**
-
+# Moments
 a simple forum system where users can make posts, while seeing and commenting on other users posts
 
 ***
