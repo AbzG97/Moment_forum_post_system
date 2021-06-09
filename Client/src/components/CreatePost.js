@@ -4,7 +4,8 @@ import axios from 'axios'
 import Sidebar from './Sidebar';
 import firebase from 'firebase/app'
 import {useHistory} from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap';
+// import { Form, Button } from 'react-bootstrap'
+import { TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Button } from "@material-ui/core"
 
 function CreatePost() {
     const [title, setTitle] = React.useState("");
@@ -51,10 +52,28 @@ function CreatePost() {
         <div>
             <Sidebar/>
             <CreatePostForm>
-                <h1>Create post</h1>
+                <h1>Create post form</h1>
                 <div className="formContainer">
+                    <form noValidate autoComplete onSubmit={CreatePost}>
+                        <TextField className="field" label="Title" onChange={(e) => setTitle(e.target.value)} required/>
+                        <br></br>
+                        <TextField className="field" label="Post description" rowsMax={5} onChange={(e) => setDescription(e.target.value)} required/>
+                        <br></br>
+                        <FormControl className="field" required>
+                            <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
+                            <Select onChange={(e) => setCategory(e.target.value)}>
+                                <MenuItem value="Gaming">Gaming</MenuItem>
+                                <MenuItem value="Programming">Programming</MenuItem>
+                                <MenuItem value="Science">Science</MenuItem>
+                                <MenuItem value="Food">Food</MenuItem>
+                            </Select>
+                            <FormHelperText>Choose a category for your post</FormHelperText>
+                        </FormControl>
+                        <br></br>
+                        <Button className="submitBtn" variant="contained" color="primary">Create Post</Button>
+                    </form>
 
-                    <Form onSubmit={CreatePost}>
+                    {/* <Form onSubmit={CreatePost}>
                         <Form.Group>
                             <Form.Label>Post title</Form.Label>
                             <Form.Control type="text" onChange={(e) => setTitle(e.target.value)} required/>
@@ -75,7 +94,7 @@ function CreatePost() {
                         <Form.Group>
                             <Button style={{marginTop: "1rem"}} type="submit" variant="outline-success">Create post</Button>
                         </Form.Group>
-                    </Form>
+                    </Form> */}
                 </div>
             </CreatePostForm>
         </div>
@@ -88,6 +107,30 @@ const CreatePostForm = styled.div`
      margin-top: 3%;
     margin-left: 22%;
     padding: 1rem;
+    h1 {
+        text-align: center;
+        padding-bottom: 1rem;
+        font-size: 3rem;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* width: 50%; */
+        background-color: lightgreen;
+        font-size: 1.85rem;
+        border-radius: 15px;
+        padding: 1rem;
+        .field {
+            width: 50%;
+            color: white;
+            font-family: 'Raleway', sans-serif;
+        }
+        .submitBtn {
+            font-family: 'Raleway', sans-serif;
+        }
+    }
 `
 
 export default CreatePost
