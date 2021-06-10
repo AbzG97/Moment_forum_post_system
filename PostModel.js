@@ -49,7 +49,11 @@ const postSchema = new mongoose.Schema({
             }
         }
     ],
-    likes: Number
+    likes: Number,
+    date : {
+        type: Date,
+        required: true
+    }
 });
 
 const postModel = mongoose.model('Post', postSchema);

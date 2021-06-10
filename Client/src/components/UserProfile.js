@@ -93,6 +93,7 @@ const UserProfile = ({setDetailedPost}) => {
                                 <th>Title</th>
                                 <th>Desciption</th>
                                 <th>Category</th>
+                                <th>Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -102,6 +103,7 @@ const UserProfile = ({setDetailedPost}) => {
                                 <td>{post.title}</td>
                                 <td>{post.description}</td>
                                 <td>{post.category}</td>
+                                <td>{post.date.slice(0,10)}</td>
                                 <td>
                                 <Button variant="outline-warning" onClick={() => {
                                     handleShowUpdateForm();

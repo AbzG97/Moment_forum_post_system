@@ -32,9 +32,11 @@ function SavedPosts({posts, setPosts, setDetailedPost, savedPosts, setSavedPosts
             <Sidebar/>
             <SavedPostsStyled>
                 <h1>Saved posts</h1>
-                {savedPosts.map((savedPost) => (
-                    <SavedPost savedPost={savedPost} posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts}/>
-                ))}
+                <div className="cards">
+                    {savedPosts.map((savedPost) => (
+                        <SavedPost savedPost={savedPost} posts={posts} setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts}/>
+                    ))}
+                </div>
             </SavedPostsStyled>
         </div>
     )
@@ -44,6 +46,12 @@ const SavedPostsStyled = styled.div`
      margin-top: 3%;
     margin-left: 22%;
     padding: 1rem;
+    .cards {
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+        grid-template-rows: auto;
+    }
+
 `
 
 export default SavedPosts

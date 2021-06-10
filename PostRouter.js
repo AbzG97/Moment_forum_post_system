@@ -41,13 +41,15 @@ postRouter.get('/posts/:id',  async (req, res) => {
 
 // create new posts
 postRouter.post('/posts', auth, async (req, res) => {
+    const date = new Date();
     const postsData = {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
         "postedBy.userId": req.user.uid,
         "postedBy.username": req.user.displayName,
-        likes: 0
+        likes: 0,
+        date: date
 
     }
     const newposts = new postModel(postsData);

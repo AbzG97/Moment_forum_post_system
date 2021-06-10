@@ -100,6 +100,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                     <p className="description">{post.description.slice(0, 40)}....</p>
                     <p>#{post.category}</p>
                     <p>posted by <strong>{post.postedBy.username}</strong></p>
+                    <p className="date">{post.date ?  post.date.slice(0,10) : post.date}</p>
                     <ButtonGroup className="buttonGroup">
                         <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
                             <Link to={`/details/${post._id}`}>View</Link>
@@ -156,42 +157,19 @@ const EventCard = styled.div`
             .title {
                 font-size: 2rem;
             }
-            .venue {
-                font-size: 1.25rem;
-                /* margin-right: 1rem; */
-            }
             .date {
-                font-size: .75rem;
+                font-size: .25rem;
                 position: absolute;
                 top: 0;
-                left: 0;
+                right: 0;
                 color: white;
                 background-color: lightgreen;
                 font-size: 1.25rem;
                 padding: .5rem;
+                border-top-right-radius: 10px;
+    
             }
             
-        }
-        .icons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            border-left: 2px solid limegreen;
-            padding-left: .5rem;
-            
-            .icon {
-                margin-bottom: .5rem;
-                cursor: pointer;
-                transition: all .25s ease-in-out;
-                &:hover {
-                    color: magenta;
-                }
-
-            }
-            .liked {
-                color : red;
-            }
         }
     }
     .stats {

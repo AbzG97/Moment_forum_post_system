@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
-import { Form } from 'react-bootstrap'
-import {ButtonGroup, Button} from "@material-ui/core"
+import { Form, ButtonGroup, Button } from 'react-bootstrap'
+// import {ButtonGroup, Button} from "@material-ui/core"
 
 const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
     const [token, setToken] = React.useState("");
@@ -85,16 +85,17 @@ const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
             <div className="container">
                 <div className="data">
                     <p className="title">{savedPost.title}</p>
-                    <p className="venue">{savedPost.description}</p>
+                    <p className="description">{savedPost.description.slice(0, 40)}....</p>
                     <p>#{savedPost.category}</p>
                     <p>posted by <strong>{savedPost.postedBy.username}</strong></p>
-                    <ButtonGroup color="primary" variant="text">
-                        <Button onClick={ViewBtnHandler}>
+                    <p className="date">{savedPost.date ?  savedPost.date.slice(0,10) : savedPost.date}</p>
+                    <ButtonGroup className="buttonGroup">
+                        <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
                             <Link to={`/details/${savedPost._id}`}>View</Link>
                         </Button>
-                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
-                        <Button onClick={unsavePost}>Unsave</Button>
-                        <Button onClick={likePost}>Like /  {savedPost.likes}</Button>
+                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
+                        <Button className="button"  variant="outline-dark" onClick={unsavePost}>Unsave</Button>
+                        <Button className="button" variant="outline-success" onClick={likePost}>Like /  {savedPost.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>
@@ -121,6 +122,7 @@ const EventCard = styled.div`
     position: relative;
     a {
         text-decoration: none;
+        color: blue;
     }
     .picture {
         width: 100%;
@@ -132,48 +134,30 @@ const EventCard = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        
-        
         .data {
+            .buttonGroup {
+                font-weight: bold;
+                .button {
+                    font-weight: bold;
+                    /* color: black; */
+                }
+            }
             .title {
                 font-size: 2rem;
             }
-            .venue {
-                font-size: 1.25rem;
-                /* margin-right: 1rem; */
-            }
             .date {
-                font-size: .75rem;
+                font-size: .25rem;
                 position: absolute;
                 top: 0;
-                left: 0;
+                right: 0;
                 color: white;
                 background-color: lightgreen;
                 font-size: 1.25rem;
                 padding: .5rem;
+                border-top-right-radius: 10px;
+    
             }
             
-        }
-        .icons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            border-left: 2px solid limegreen;
-            padding-left: .5rem;
-            
-            .icon {
-                margin-bottom: .5rem;
-                cursor: pointer;
-                transition: all .25s ease-in-out;
-                &:hover {
-                    color: magenta;
-                }
-
-            }
-            .liked {
-                color : red;
-            }
         }
     }
     .stats {
@@ -195,5 +179,4 @@ const EventCard = styled.div`
     }
  
 `
-
 export default SavedPost;

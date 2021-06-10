@@ -47,9 +47,11 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                 <h1>Detailed post page</h1>
                 {!loading && LSData && <div>
                     <h2>{LSData.title}</h2>
-                    <h4>{LSData.description}</h4>
                     <p>#{LSData.category}</p>
                     <p>Likes: {LSData.likes}</p>
+                    <p>Posted on: {LSData.date.slice(0, 10)}</p>
+                    <p>{LSData.description}</p>
+               
                     <p>Post by {LSData.postedBy.username}</p>
                     <ListGroup variant="flush">
                         {LSData.comments.map((comment) => (
