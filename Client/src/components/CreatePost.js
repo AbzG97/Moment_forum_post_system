@@ -53,17 +53,16 @@ function CreatePost() {
             <CreatePostForm>
                 <h1>Create post</h1>
                 <div className="formContainer">
-
                     <Form onSubmit={CreatePost}>
-                        <Form.Group>
+                        <Form.Group className="fieldContainer">
                             <Form.Label>Post title</Form.Label>
                             <Form.Control type="text" onChange={(e) => setTitle(e.target.value)} required/>
                         </Form.Group>
-                        <Form.Group>
+                        <Form.Group className="fieldContainer">
                             <Form.Label>Post Description</Form.Label>
                             <Form.Control as="textarea" row={3} type="text" onChange={(e) => setDescription(e.target.value)} required/>
                         </Form.Group>
-                        <Form.Group style={{width: "50%"}}>
+                        <Form.Group className="fieldContainer">
                             <Form.Label htmlFor="categories">Select post category:</Form.Label>
                                 <Form.Control as="select" name="categories" id="categories" onChange={(e) => setCategory(e.target.value)}>
                                     <option value="Gaming">Gaming</option>
@@ -72,8 +71,8 @@ function CreatePost() {
                                     <option value="Food">Food</option>
                             </Form.Control>
                         </Form.Group>
-                        <Form.Group>
-                            <Button style={{marginTop: "1rem"}} type="submit" variant="outline-success">Create post</Button>
+                        <Form.Group className="fieldContainer">
+                            <Button type="submit" variant="outline-success">Create post</Button>
                         </Form.Group>
                     </Form>
                 </div>
@@ -88,6 +87,12 @@ const CreatePostForm = styled.div`
      margin-top: 3%;
     margin-left: 22%;
     padding: 1rem;
+    .formContainer {
+        width: 50%;
+        .fieldContainer {
+            margin-top: 1rem;
+        }
+    }
 `
 
 export default CreatePost

@@ -166,6 +166,7 @@ const StyledProfile = styled.div`
     margin-left: 22%;
     padding: 1rem;
     .profileContainer {
+        padding: 1rem;
         margin-top: 10%;
         -webkit-box-shadow: 0px 0px 23px 3px #000000; 
         box-shadow: 0px 0px 23px 3px #000000;
@@ -174,6 +175,7 @@ const StyledProfile = styled.div`
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        width: 100%;
         .userStats {
             display: flex;
             flex-direction: row;

@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
-import { Form } from 'react-bootstrap'
-import {ButtonGroup, Button} from "@material-ui/core"
+import { Form, ButtonGroup, Button, Badge} from 'react-bootstrap'
 import { useAuth } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
@@ -90,27 +89,24 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
             });
         }
         
-    }
-
-
-  
-   
+    } 
     return (
         <EventCard>
+             
             <div className="container">
                 <div className="data">
                     <p>{saveStatus ? "saved" : "not saved"}</p>
                     <p className="title">{post.title}</p>
-                    <p className="venue">{post.description}</p>
+                    <p className="description">{post.description.slice(0, 40)}....</p>
                     <p>#{post.category}</p>
                     <p>posted by <strong>{post.postedBy.username}</strong></p>
-                    <ButtonGroup color="primary" variant="text">
-                        <Button onClick={ViewBtnHandler}>
+                    <ButtonGroup className="buttonGroup">
+                        <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
                             <Link to={`/details/${post._id}`}>View</Link>
                         </Button>
-                        <Button onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={currentUser ? false : true}>Comment</Button>
-                        <Button onClick={savePost} disabled={saveStatus || !currentUser ? true : false} >Save</Button>
-                        <Button onClick={likePost}>Like /  {post.likes}</Button>
+                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={currentUser ? false : true}>Comment</Button>
+                        <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !currentUser ? true : false} >Save</Button>
+                        <Button className="button" variant="outline-success" onClick={likePost}>Like /  {post.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>
@@ -137,6 +133,7 @@ const EventCard = styled.div`
     position: relative;
     a {
         text-decoration: none;
+        color: blue;
     }
     .picture {
         width: 100%;
@@ -148,9 +145,14 @@ const EventCard = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        
-        
         .data {
+            .buttonGroup {
+                font-weight: bold;
+                .button {
+                    font-weight: bold;
+                    /* color: black; */
+                }
+            }
             .title {
                 font-size: 2rem;
             }
