@@ -135,6 +135,7 @@ const EventCard = styled.div`
         flex-direction: row;
         justify-content: space-between;
         .data {
+            margin-top: 2rem;
             .buttonGroup {
                 font-weight: bold;
                 .button {
