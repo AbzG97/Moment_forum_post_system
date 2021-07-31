@@ -1,5 +1,5 @@
 import React from 'react'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert} from 'react-bootstrap';
@@ -10,7 +10,7 @@ function Login() {
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const {Login} = useAuth(); 
+    const {Login} = useUserContext(); 
     const history = useHistory();
  
 

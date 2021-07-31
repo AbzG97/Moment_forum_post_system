@@ -4,7 +4,7 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form, ButtonGroup, Button, Badge} from 'react-bootstrap'
-import { useAuth } from '../AuthContext'
+import { useUserContext } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
     const [token, setToken] = React.useState("");

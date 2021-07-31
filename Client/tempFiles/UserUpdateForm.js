@@ -1,5 +1,5 @@
 import React from 'react'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';

@@ -6,7 +6,7 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import UpdateForm from './UpdateForm'
 import {Button, Modal} from 'react-bootstrap'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 
 
 
@@ -18,7 +18,7 @@ const UserProfile = ({setDetailedPost}) => {
     const [deleted, SetDeleted] = React.useState(false);
     const [updateForm, setUpdateForm] = React.useState(false);
     const [updatedPost, setUpdatedPost] = React.useState();
-    const {currentUser, deleteProfile} = useAuth();
+    const {currentUser, deleteProfile} = useUserContext();
     const [showModal, setShowModal] = React.useState();
 
     const history = useHistory();

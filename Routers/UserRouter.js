@@ -1,22 +1,34 @@
 const express = require("express");
 const user_model = require("../Models/UserModel");
-require("../mogoose-connect");
+require("../dbConnection");
 const User_Router = express.Router();
-// const authenticate = require("../authenticate_middleware");
+const authenticate = require("../backendAuth");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
 
 // create user / sign up 
-User_Router.post('/users', async (req, res) => {
-    const newUser = new user_model({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    });
+User_Router.post('/users/create', async (req, res) => {
+  
+    const new_user = new user_model(req.body);
+
+    // console.log(new_user);
 
     try {
-        await newUser.save();
-        const newToken = await newUser.GenerateAuthTokens();
+        const new_token = jwt.sign({id: new_user._id.toString()}, process.env.SECRET);
+		new_user.tokens = new_user.tokens.concat({token: new_token});
 
-        res.status(201).send({ user: newUser, token: newToken });
+		// hash password
+		const salt = await bcrypt.genSalt(10);
+		const hashed = await bcrypt.hash(new_user.password, salt);
+		new_user.password = hashed;
+       
+        // console.log(new_user);
+
+
+        res.cookie('auth_token',new_token, { httpOnly: true, secure: false, maxAge: 3600000 });
+        await new_user.save();
+        res.status(201).send({ user: new_user, token: new_token });
 
     } catch (e) {
         res.status(500).send(e);
@@ -28,10 +40,26 @@ User_Router.post('/users', async (req, res) => {
 // it also generates jwt tokens for the user object to be used in other routes that require authentication. 
 User_Router.post("/users/login", async (req, res) => {
     try {
-        const user = await user_model.findByCreds(req.body.email, req.body.password);
-        const newToken = await user.GenerateAuthTokens();
-        res.status(200).send({ user: user, token: newToken });
+       // find user
+		const user_in_db = await user_model.findOne({username: req.body.username});
+		if(!user_in_db){
+			res.status(404).send({message: "username not found in database"});
+		}
 
+		// verify password
+		const check = await bcrypt.compare(req.body.password, user_in_db.password);
+		
+		if(!check){
+			res.status(404).send({message: "username or password are wrong"});
+		}
+		// generate token
+		const new_token = jwt.sign({id: user_in_db._id}, process.env.SECRET);
+		user_in_db.tokens = user_in_db.tokens.concat({token: new_token});
+
+		// set auth token in cookie
+		res.cookie('auth_token',new_token, { httpOnly: true, secure: false, maxAge: 3600000 });
+		await user_in_db.save();
+		res.status(200).send({message: "user login successful", user: user_in_db});
     } catch (e) {
         res.status(404).send({ "error": "can't find user" });
     }
@@ -45,12 +73,7 @@ User_Router.get('/users/me', authenticate, async (req, res) => {
 
     } catch (e){
         res.status(401).send({message: "can't get data for unauthorized user"});
-    }
-    
-   
-    //console.log(req.user);
-    // console.log(req.token);
-   
+    }   
 });
 
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
-import Sidebar from './Sidebar';
+import Sidebar from '../src/components/Sidebar';
 import firebase from 'firebase/app'
 import {useHistory} from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap';

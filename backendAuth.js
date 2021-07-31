@@ -1,5 +1,5 @@
 const JWT = require("jsonwebtoken");
-const user_model = require("./models/user-model");
+const user_model = require("./Models/UserModel");
 
 // this function will be used for middleware on user routes that run to authenticate and validate the user token
 // they are used to authenticate users and authorize actions
@@ -17,7 +17,6 @@ const authenticate_token = async (req, res, next) => {
       res.status(401).send({ error: "Please authenticate" });
     } else {
       req.user = find_user;
-      req.token = retrieved_token;
       next();
     }
   } catch (e) {

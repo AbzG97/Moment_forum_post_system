@@ -1,10 +1,10 @@
 import React from 'react'
-import { useAuth } from '../AuthContext'
+import { useUserContext } from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components';
 
 function Sidebar() {
-    const {Logout, currentUser} = useAuth();
+    const {Logout, user} = useUserContext();
     const history = useHistory();
     const [error, setError] = React.useState('');
 
@@ -22,16 +22,16 @@ function Sidebar() {
     }
     return (
         <StyledMenu>
-            {currentUser && <div className="userData">
-                <img  src={currentUser.photoURL} alt="profile"/>
-                <p>{currentUser.displayName}</p>
+            {user && <div className="userData">
+                {/* <img  src={user.user.photoURL || null} alt="profile"/> */}
+                <p>{user.user.name}</p>
             </div>}
             <ul className="links">
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/createpost">Create post</Link></li>
                 <li><Link to="/savedposts">Saved posts</Link></li>
                 <li><Link to="/profile">Profile</Link></li>
-                {currentUser ?  <li onClick={handleLogout}>Logout</li> : <li><Link to="login">Login</Link></li>}
+                {user ?  <li onClick={handleLogout}>Logout</li> : <li><Link to="login">Login</Link></li>}
             </ul>
             
         </StyledMenu>

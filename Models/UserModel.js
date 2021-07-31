@@ -1,14 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: "string",
-        required: true,
-        trim: true
-    },
     email: {
         type: "string",
         required: true,
@@ -20,6 +15,12 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    name: {
+        type: "string",
+        required: true,
+        trim: true
+    },
+    
     password: {
         type: "string",
         required: true,
@@ -55,26 +56,26 @@ userSchema.statics.findByCreds = async (email, password) => {
 }
 
 // generate JWT tokens for user objects
-userSchema.methods.GenerateAuthTokens = async function(){
-    const user = this;
-    const generated_token = JWT.sign({id: user._id.toString()}, process.env.SECRET); // make a token 
-    user.tokens = user.tokens.concat({token: generated_token}); // concat to the tokens array
-    await user.save(); // save the user
-    //console.log(generated_token);
-    return generated_token; // return generated token
+// userSchema.methods.GenerateAuthTokens = async () => {
+//     const user = this;
+//     const generated_token = JWT.sign({id: user._id.toString()}, process.env.SECRET); // make a token 
+//     user.tokens = user.tokens.concat({token: generated_token}); // concat to the tokens array
+//     await user.save(); // save the user
+//     console.log(generated_token);
+//     return generated_token; // return generated token
 
-}
+// }
 
 
-// this middleware will hash the passwords of users before creating and putting them in the database / any user object that will use save() 
-userSchema.pre("save", async function (next) {
-    const user = this;
-    if (user.isModified("password")) {
-        user.password = await bcrypt.hash(user.password, 8);
-    }
+// // this middleware will hash the passwords of users before creating and putting them in the database / any user object that will use save() 
+// userSchema.pre("save", async function (next) {
+//     const user = this;
+//     if (user.isModified("password")) {
+//         user.password = await bcrypt.hash(user.password, 8);
+//     }
 
-    next();
-});
+//     next();
+// });
 
 
 const user_model = mongoose.model("user", userSchema, "users");

@@ -7,8 +7,8 @@ export const UserContext = React.createContext();
 export const UserProvider = ({children}) => {
     const [user, setUser] = React.useState();
 
-    const Signup = async (email, name, password) => {
-        const new_user = await axios.post('/users/create', { email, name, password});
+    const Signup = async (name, email, password) => {
+        const new_user = await axios.post('/users/create', { name, email, password});
         console.log(new_user);
         setUser(new_user.data);
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 import {Link, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
@@ -13,7 +13,7 @@ function Signup() {
     const [confPassword, setConfPassword] = React.useState("");
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const {Signup} = useAuth(); 
+    const {Signup} = useUserContext(); 
     const history = useHistory();
 
     const handleSubmit = async (e) => {
@@ -24,7 +24,7 @@ function Signup() {
             try {
                 setError("");
                 setLoading(true);
-                await Signup(email, password, name); // value from forms
+                await Signup(name, email, password); // value from forms
                 history.push('/');
                 
             } catch {
