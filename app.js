@@ -2,7 +2,8 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const path = require("path");
-const postRouter = require('./PostRouter');
+const postRouter = require('./Routers/PostRouter');
+const userRouter = require("./Routers/UserRouter");
 require("dotenv").config();
 
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(postRouter);
+app.use(userRouter);
 const port = process.env.PORT || 3001;
 
 if(process.env.NODE_ENV === "production"){

@@ -1,4 +1,4 @@
-require("./dbConnection");
+require("../dbConnection");
 const mongoose = require("mongoose");
 // creating the events schema and model
 

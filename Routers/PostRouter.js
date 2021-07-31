@@ -1,7 +1,7 @@
 const express = require('express');
-require("./dbConnection");
-const postModel = require('./PostModel');
-const auth = require('./backendAuth');
+require("../dbConnection");
+const postModel = require('../Models/PostModel');
+const auth = require('../backendAuth');
 const postRouter = express.Router();
 
 
