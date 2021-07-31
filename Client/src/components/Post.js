@@ -4,26 +4,26 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form, ButtonGroup, Button, Badge} from 'react-bootstrap'
-import { useUserContext } from '../src/AuthContext'
+import { useUserContext } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
     const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
     const [saveStatus, setSaveStatus] = React.useState(false);
-    const {currentUser} = useAuth();
+    const {user} = useUserContext();
     const [liked, setLiked] = React.useState(false);
     const [likes, setLikes] = React.useState(post.likes);
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
      // get the token of the current user to be used in for authenticating the user to use the posts api 
-     React.useEffect(() => {
-        const getToken = async () => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
-                setToken(decoded);
-            }
-        }
-        getToken();
-    }, []);
+    //  React.useEffect(() => {
+    //     const getToken = async () => {
+    //         if(firebase.auth().currentUser){
+    //             const decoded = await firebase.auth().currentUser.getIdToken(true);
+    //             setToken(decoded);
+    //         }
+    //     }
+    //     getToken();
+    // }, []);
 
     // check the status of a post
     React.useState(() => {
@@ -40,33 +40,27 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
         setMessage("comment posted");
         setToggleCommentForm(false);
         setShow(true);
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/comment/${post._id}`,
                 data: {
                     comment: comment
                 },
-                headers: {
-                    'authtoken': decoded
-                }
-            })
+               
+            }, {withCredentials: true})
         }
         
     }
 
     // save the chosen post 
     const savePost = async () => {
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/${post._id}/save`,
-                headers: {
-                    'authtoken': decoded
-                }
-            });
+                
+            }, {withCredentials: true});
             setSaveStatus(true);
         }
     }
@@ -78,15 +72,12 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
     }
 
     const likePost = async () => {
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/${post._id}/like`,
-                headers: {
-                    'authtoken': decoded
-                }
-            });
+                
+            }, {withCredentials: true});
         }
         
     } 
@@ -105,8 +96,8 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                         <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
                             <Link to={`/details/${post._id}`}>View</Link>
                         </Button>
-                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={currentUser ? false : true}>Comment</Button>
-                        <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !currentUser ? true : false} >Save</Button>
+                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={user ? false : true}>Comment</Button>
+                        <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !user ? true : false} >Save</Button>
                         <Button className="button" variant="outline-success" onClick={likePost}>Like /  {post.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
