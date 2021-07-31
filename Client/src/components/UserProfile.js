@@ -4,7 +4,7 @@ import Sidebar from './Sidebar'
 import {Link, useHistory} from 'react-router-dom'
 import axios from 'axios'
 import firebase from 'firebase/app'
-import UpdateForm from './UpdateForm'
+import UpdateForm from '../../tempFiles/UpdateForm'
 import {Button, Modal} from 'react-bootstrap'
 import {useUserContext} from '../AuthContext'
 

@@ -59,7 +59,7 @@ User_Router.post("/users/login", async (req, res) => {
 		// set auth token in cookie
 		res.cookie('auth_token',new_token, { httpOnly: true, secure: false, maxAge: 3600000 });
 		await user_in_db.save();
-		res.status(200).send({message: "user login successful", user: user_in_db});
+		res.status(200).send({message: "user login successful", new_token: new_token, user: user_in_db});
     } catch (e) {
         res.status(404).send({ "error": "can't find user" });
     }

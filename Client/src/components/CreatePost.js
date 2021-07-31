@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
-import Sidebar from '../src/components/Sidebar';
+import Sidebar from './Sidebar';
 import firebase from 'firebase/app'
 import {useHistory} from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap';
+import {useUserContext} from '../AuthContext';
 
 function CreatePost() {
     const [title, setTitle] = React.useState("");
@@ -12,34 +13,31 @@ function CreatePost() {
     const [category, setCategory] = React.useState("Gaming");
     const [token, setToken] = React.useState("");
     const history = useHistory();
+    const { user } = useUserContext();
 
     // get the token of the current user to be used in for authenticating the user to use the events api 
-    React.useEffect(() => {
-        const getToken = async () => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
-                setToken(decoded);
-            }
-        }
-        getToken();
-    }, []);
+    // React.useEffect(() => {
+    //     const getToken = async () => {
+    //         if(firebase.auth().currentUser){
+    //             const decoded = await firebase.auth().currentUser.getIdToken(true);
+    //             setToken(decoded);
+    //         }
+    //     }
+    //     getToken();
+    // }, []);
 
     // create event with the currentUser
     const CreatePost = async (e) => {
         e.preventDefault();  
         try {
-            await axios({
-                method: "post",
-                url: "/posts",
-                headers : {
-                    'authtoken': token
-                },
-                data: {
+            await axios.post(
+                "/posts",
+                {
                     title: title,
                     description: description,
                     category: category
-                }
-            });
+                }, 
+                { withCredentials: true });
             history.push("/");
         } catch {
             console.log("error happened while creating a post");

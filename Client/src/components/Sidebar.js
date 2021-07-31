@@ -24,7 +24,7 @@ function Sidebar() {
         <StyledMenu>
             {user && <div className="userData">
                 {/* <img  src={user.user.photoURL || null} alt="profile"/> */}
-                <p>{user.user.name}</p>
+                <p>{user.name}</p>
             </div>}
             <ul className="links">
                 <li><Link to="/">Home</Link></li>

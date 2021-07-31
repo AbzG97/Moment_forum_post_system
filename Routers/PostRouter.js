@@ -42,21 +42,22 @@ postRouter.get('/posts/:id',  async (req, res) => {
 // create new posts
 postRouter.post('/posts', auth, async (req, res) => {
     const date = new Date();
-    const postsData = {
+    const postData = {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
-        "postedBy.userId": req.user.uid,
-        "postedBy.username": req.user.displayName,
+        "postedBy.userId": req.user._id,
+        "postedBy.username": req.user.name,
         likes: 0,
         date: date
 
     }
-    const newposts = new postModel(postsData);
+    const newpost = new postModel(postData);
+    console.log(newpost)
 
     try {
-        await newposts.save();
-        res.status(201).send({message: "new posts created", posts: newposts});
+        await newpost.save();
+        res.status(201).send({message: "new posts created", post: newpost});
 
     } catch (e){
         res.status(500).send({message: 'server error'});
