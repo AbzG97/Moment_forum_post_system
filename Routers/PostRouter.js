@@ -68,7 +68,7 @@ postRouter.post('/posts', auth, async (req, res) => {
 postRouter.get('/user/profile/myPosts', auth, async(req, res) => {
     console.log(req.user.uid);
     try {
-        const posts = await postModel.find({"postedBy.userId": req.user.uid}); // find using the authenticated user id
+        const posts = await postModel.find({"postedBy.userId": req.user._id}); // find using the authenticated user id
         if(posts.length === 0 ){
             res.status(204).send({message: "you have not posted any posts"});
         }  else {

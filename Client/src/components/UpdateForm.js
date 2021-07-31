@@ -5,39 +5,25 @@ import {Form, Button} from 'react-bootstrap'
 
 
 
-function UpdateForm({ updatedPost, setMessage }) {
+function UpdateForm({ updatedPost }) {
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [category, setCategory] = React.useState("Gaming");
-    const [token, setToken] = React.useState();
 
-
-    // get the token of the current user to be used in for authenticating the user to use the events api 
-    React.useEffect(() => {
-        const getToken = async () => {
-            if (firebase.auth().currentUser) {
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
-                setToken(decoded);
-            }
-        }
-        getToken();
-    }, []);
 
     // create event with the currentUser
     const UpdatePost = async (e) => {
-        setMessage("Update successful");
+        // e.preventDefault();
+        // setMessage("Update successful");
         await axios({
             method: "PUT",
             url: `posts/update/${updatedPost._id}`,
-            headers: {
-                'authtoken': token
-            },
             data: {
                 title: title || updatedPost.title,
                 description: description || updatedPost.description,
                 category: category || updatedPost.category
             }
-        })
+        }, {withCredentials: true})
     }
 
     return (

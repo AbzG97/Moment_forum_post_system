@@ -31,10 +31,15 @@ export const UserProvider = ({children}) => {
         await axios.post("/users/logout", {withCredentials: true});
         setUser();
     }
+
+    const deleteProfile = async () => {
+        await axios.delete("/users/me/delete", {withCredentials: true});
+        setUser();
+    }
     
 
     return (
-        <UserContext.Provider value={{user, Signup, Login, fetchCurrentUser, Logout}}>
+        <UserContext.Provider value={{user, Signup, Login, fetchCurrentUser, Logout, deleteProfile}}>
             {children}
         </UserContext.Provider>
     )

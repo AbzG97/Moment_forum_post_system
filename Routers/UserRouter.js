@@ -130,7 +130,8 @@ User_Router.get("/users", async (req, res) => {
     }
 });
 
-User_Router.get("/users/me/delete", authenticate, async (req,res) => {
+User_Router.delete("/users/me/delete", authenticate, async (req,res) => {
+    console.log(req.user);
     try {
         await user_model.findByIdAndDelete(req.user._id);
         res.status(200).send({message: "delete successful"});

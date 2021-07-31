@@ -1,9 +1,9 @@
 import React from 'react'
-import {useUserContext} from '../AuthContext'
+import {useUserContext} from '../src/AuthContext'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
-import Sidebar from './Sidebar';
+import Sidebar from '../src/components/Sidebar';
 import axios from 'axios';
 import firebase from 'firebase/app'
 
