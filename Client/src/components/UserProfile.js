@@ -12,7 +12,6 @@ import {useUserContext} from '../AuthContext'
 const UserProfile = ({setDetailedPost}) => {
     
     const [postsMadeByUser, setPostsMadeByUser] = React.useState();
-    const [token, setToken] = React.useState("");
     const [loading, setLoading] = React.useState();
     const [deleted, SetDeleted] = React.useState(false);
     const [updateForm, setUpdateForm] = React.useState(false);
@@ -102,10 +101,7 @@ const UserProfile = ({setDetailedPost}) => {
                                     await axios({
                                         method:"DELETE",
                                         url: `/posts/delete/${post._id}`,
-                                        headers: {
-                                            'authtoken': token
-                                        }
-                                    });
+                                    }, {withCredentials: true});
                                     SetDeleted(!deleted);
 
                                 }}>Delete</Button> / <Link to={`/details/${post._id}`}><Button variant="outline-info" onClick={() =>
