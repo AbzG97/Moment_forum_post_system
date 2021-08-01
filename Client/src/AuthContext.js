@@ -8,16 +8,16 @@ export const UserProvider = ({children}) => {
     const [user, setUser] = React.useState();
 
     const Signup = async (name, email, password) => {
-        const new_user = await axios.post('/users/create', { name, email, password});
-        console.log(new_user);
-        setUser(new_user.data);
+        await axios.post('/users/create', { name, email, password});
+        const current_user = await axios.get('/users/me', {withCredentials: true});
+        setUser(current_user.data)
 
     }
 
     const Login = async (email, password) => {
-        const new_user = await axios.post('/users/login', { email, password});
-        console.log(new_user);
-        setUser(new_user.data);
+        await axios.post('/users/login', { email, password});
+        const current_user = await axios.get('/users/me', {withCredentials: true});
+        setUser(current_user.data);
 
     }
 
