@@ -1,8 +1,6 @@
 import React from 'react'
-import firebase from 'firebase/app'
 import axios from 'axios'
 import styled from 'styled-components'
-// import Post from './Post';
 import Sidebar from './Sidebar';
 import {Alert} from 'react-bootstrap'
 import Post from './Post'

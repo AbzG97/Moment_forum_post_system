@@ -1,30 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
-import Sidebar from './Sidebar';
-import firebase from 'firebase/app'
+import Sidebar from './Sidebar'
 import {useHistory} from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap';
-import {useUserContext} from '../AuthContext';
+import { Form, Button } from 'react-bootstrap'
 
 function CreatePost() {
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [category, setCategory] = React.useState("Gaming");
-    const [token, setToken] = React.useState("");
     const history = useHistory();
-    const { user } = useUserContext();
-
-    // get the token of the current user to be used in for authenticating the user to use the events api 
-    // React.useEffect(() => {
-    //     const getToken = async () => {
-    //         if(firebase.auth().currentUser){
-    //             const decoded = await firebase.auth().currentUser.getIdToken(true);
-    //             setToken(decoded);
-    //         }
-    //     }
-    //     getToken();
-    // }, []);
+ 
 
     // create event with the currentUser
     const CreatePost = async (e) => {

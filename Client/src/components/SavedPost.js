@@ -1,13 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
-import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form, ButtonGroup, Button } from 'react-bootstrap'
 import { useUserContext } from '../AuthContext'
 
 const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
-    const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
     const [message, setMessage] = React.useState("");
     const [show, setShow] = React.useState();

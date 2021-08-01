@@ -7,12 +7,9 @@ import { Form, ButtonGroup, Button, Badge} from 'react-bootstrap'
 import { useUserContext } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
-    const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
     const [saveStatus, setSaveStatus] = React.useState(false);
     const {user} = useUserContext();
-    const [liked, setLiked] = React.useState(false);
-    const [likes, setLikes] = React.useState(post.likes);
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
     
 

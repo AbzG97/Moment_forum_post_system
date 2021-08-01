@@ -1,7 +1,7 @@
 import React from 'react'
 import Sidebar from './Sidebar'
 import styled from 'styled-components'
-import firebase from 'firebase/app'
+
 import axios from 'axios'
 import SavedPost from './SavedPost'
 import {useUserContext} from '../AuthContext'
