@@ -1,15 +1,19 @@
 import React from 'react'
 import axios from 'axios'
-import firebase from 'firebase/app'
 import styled from 'styled-components'
-import Sidebar from './Sidebar';
-import { ListGroup } from 'react-bootstrap';
-
+import Sidebar from './Sidebar'
+import { ListGroup } from 'react-bootstrap'
+import {useUserContext} from "../AuthContext"
+import {Link} from 'react-router-dom'
+ 
 
 function DetailedPostView({detailedPost, setDetailedPost}) {  
     const [loading, setLoading] = React.useState();
     const [LSData, setLSData] = React.useState();
-    const [parsed, setParsed] = React.useState(JSON.parse(localStorage.getItem("detailedPost"))); // used to keep the _id of current detailedPost to call the api again in case user refreshes and not crashing the app
+
+    // used to keep the _id of current detailedPost to call the api again in case user refreshes and not crashing the app
+    const [parsed, setParsed] = React.useState(JSON.parse(localStorage.getItem("detailedPost"))); 
+    const {user} = useUserContext();
 
     
 
@@ -17,15 +21,13 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
     React.useEffect(() => {
         setLoading(true);
         const GetPost = async (e) => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
+            if(user){
                 const response = await axios({
                     method: "GET",
                     url: `/posts/${parsed._id}`,
-                    headers: {
-                        'authtoken': decoded
-                    }
-                })
+                    
+                }, {withCredentials: true});
+
                 setLSData(response.data.post);
             } else {
                 const response = await axios({
@@ -51,8 +53,8 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                     <p>Likes: {LSData.likes}</p>
                     <p>Posted on: {LSData.date.slice(0, 10)}</p>
                     <p>{LSData.description}</p>
-               
                     <p>Post by {LSData.postedBy.username}</p>
+                    <Link to="/">Back to posts</Link>
                     <ListGroup variant="flush">
                         {LSData.comments.map((comment) => (
                             <ListGroup.Item>{comment.commentDesc} <strong>by</strong> {comment.commentBy.username}</ListGroup.Item>

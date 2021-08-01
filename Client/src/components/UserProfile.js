@@ -3,10 +3,9 @@ import styled from 'styled-components'
 import Sidebar from './Sidebar'
 import {Link, useHistory} from 'react-router-dom'
 import axios from 'axios'
-import firebase from 'firebase/app'
-import UpdateForm from './UpdateForm'
+import UpdateForm from '../components/UpdateForm'
 import {Button, Modal} from 'react-bootstrap'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 
 
 
@@ -18,31 +17,24 @@ const UserProfile = ({setDetailedPost}) => {
     const [deleted, SetDeleted] = React.useState(false);
     const [updateForm, setUpdateForm] = React.useState(false);
     const [updatedPost, setUpdatedPost] = React.useState();
-    const {currentUser, deleteProfile} = useAuth();
+    const { user, fetchCurrentUser, deleteProfile } = useUserContext();
     const [showModal, setShowModal] = React.useState();
 
     const history = useHistory();
-   
-   
 
-
+    React.useEffect(() => fetchCurrentUser(), []);
+   
     React.useEffect(() => {
-        const getToken = async () => {
+        const GetCurrentUserPosts = async () => {
             setLoading(true)
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
-                const response = await axios({
-                    method: "get",
-                    url: "/user/profile/myPosts",
-                    headers: {
-                        "authtoken": decoded
-                    }
-                });
+            const response = await axios({
+                method: "GET",
+                url: "/user/profile/myPosts"
+                }, {withCredentials: true});
                 setPostsMadeByUser(response.data.posts);
-                setToken(decoded);
+    
             }
-        }
-        getToken();
+        GetCurrentUserPosts();
         setLoading(false);
     }, [deleted]); // user posts are retreived from database everytime a post is deleted
 
@@ -57,29 +49,27 @@ const UserProfile = ({setDetailedPost}) => {
 
     // deletes the comments and posts if the user decides to deletes their profile
     const handelUserPostsDelete = async () => {
-        await deleteProfile();
+        deleteProfile();
         await axios({
             method: "delete",
             url: "/posts/cascadeDelete",
             data: {
-                uid: currentUser.uid
+                uid: user._id
             }
         }); 
-        history.push("/login");       
+        history.push("/"); 
+       
+              
     } 
 
     return (
         <>
-        
-
-        <StyledProfile>
+        {user ? <StyledProfile>
             <Sidebar/>
-        
-
                 <div className="profileContainer">
-                    <img  src={currentUser.photoURL} alt="profile"/>   
-                    <p>{currentUser.displayName}</p>
-                    <p>{currentUser.email}</p>
+                    {/* <img  src={cu.photoURL} alt="profile"/>    */}
+                    <p>{user.name}</p>
+                    <p>{user.email}</p>
                     <div className="buttons">
                         <Link to="/updateProfile"><Button variant="outline-warning">Update profile</Button></Link>
                         <Button onClick={handleShowModal} variant="outline-danger">Delete profile</Button>
@@ -128,7 +118,7 @@ const UserProfile = ({setDetailedPost}) => {
                 </table>
             </div>
            
-        </StyledProfile>
+        </StyledProfile> : <h2>Loading</h2>}
         <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header>
             <Modal.Title>Profile deletion</Modal.Title>

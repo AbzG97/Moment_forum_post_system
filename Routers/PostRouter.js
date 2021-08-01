@@ -1,7 +1,7 @@
 const express = require('express');
-require("./dbConnection");
-const postModel = require('./PostModel');
-const auth = require('./backendAuth');
+require("../dbConnection");
+const postModel = require('../Models/PostModel');
+const auth = require('../backendAuth');
 const postRouter = express.Router();
 
 
@@ -42,21 +42,22 @@ postRouter.get('/posts/:id',  async (req, res) => {
 // create new posts
 postRouter.post('/posts', auth, async (req, res) => {
     const date = new Date();
-    const postsData = {
+    const postData = {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
-        "postedBy.userId": req.user.uid,
-        "postedBy.username": req.user.displayName,
+        "postedBy.userId": req.user._id,
+        "postedBy.username": req.user.name,
         likes: 0,
         date: date
 
     }
-    const newposts = new postModel(postsData);
+    const newpost = new postModel(postData);
+    console.log(newpost)
 
     try {
-        await newposts.save();
-        res.status(201).send({message: "new posts created", posts: newposts});
+        await newpost.save();
+        res.status(201).send({message: "new posts created", post: newpost});
 
     } catch (e){
         res.status(500).send({message: 'server error'});
@@ -67,7 +68,7 @@ postRouter.post('/posts', auth, async (req, res) => {
 postRouter.get('/user/profile/myPosts', auth, async(req, res) => {
     console.log(req.user.uid);
     try {
-        const posts = await postModel.find({"postedBy.userId": req.user.uid}); // find using the authenticated user id
+        const posts = await postModel.find({"postedBy.userId": req.user._id}); // find using the authenticated user id
         if(posts.length === 0 ){
             res.status(204).send({message: "you have not posted any posts"});
         }  else {
@@ -125,8 +126,8 @@ postRouter.put('/posts/update/:id', auth, async (req, res) => {
 postRouter.post('/posts/comment/:id', auth, async (req,res) => {
     const data = { 
         commentDesc: req.body.comment,
-        "commentBy.userId": req.user.uid,
-        "commentBy.username": req.user.displayName
+        "commentBy.userId": req.user._id,
+        "commentBy.username": req.user.name
     }
     try {
         const post = await postModel.findById(req.params.id);
@@ -144,12 +145,12 @@ postRouter.post('/posts/comment/:id', auth, async (req,res) => {
 // update the username of all posts and comments made by the user when they update their username
 postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
     try {
-        const posts = await postModel.find({'postedBy.userId': req.user.uid});
+        const posts = await postModel.find({'postedBy.userId': req.user._id});
         posts.map(async (post) => {
             post.postedBy.username = req.body.username;
             await post.save();
         })
-        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user.uid});
+        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user._id});
         postsAgain.map(async (post) => {
             post.comments.map((comment) => comment.commentBy.username = req.body.username);
             await post.save();

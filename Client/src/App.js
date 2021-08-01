@@ -9,16 +9,14 @@ import CreatePost from './components/CreatePost';
 import DetailedPostView from './components/DetailedPostView';
 import UpdateUserForm from './components/UserUpdateForm';
 import SavedPosts from './components/SavedPosts';
+import {useUserContext} from './AuthContext'
 
 function App() {
   const [posts, setPosts ] = React.useState();
   const [detailedPost, setDetailedPost] = React.useState();
   const [savedPosts, setSavedPosts] = React.useState([]);
-  
-
-  // JSON.parse(localStorage.getItem('detailedPost')
-
-  
+  const { fetchCurrentUser} = useUserContext();
+  React.useEffect(() => fetchCurrentUser(), []);
 
   return (
     <Router>
@@ -29,9 +27,9 @@ function App() {
             <Route exact path="/" render={(props) => <Dashboard {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} />} /> 
       
-            <PrivateRoute path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
-      
-            <PrivateRoute path="/createpost" render={(props) => <CreatePost  {...props}/>}/>
+            <Route path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
+    
+            <Route exact path="/createpost" render={(props) => <CreatePost  {...props}/>} />
 
             <PrivateRoute path="/savedposts" render={(props) => <SavedPosts  {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} /> }/>
@@ -40,9 +38,12 @@ function App() {
 
             <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>    
             
-            <Route path="/signup" component={Signup}/>
+            <Route path="/signup">
+              <Signup/>
+            </Route>
 
             <Route path="/login" component={Login}/>
+
           </Switch>
         </div>
     </Router>

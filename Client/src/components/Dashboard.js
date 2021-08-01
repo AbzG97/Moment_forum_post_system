@@ -1,10 +1,10 @@
 import React from 'react'
-import firebase from 'firebase/app'
 import axios from 'axios'
 import styled from 'styled-components'
-import Post from './Post';
 import Sidebar from './Sidebar';
 import {Alert} from 'react-bootstrap'
+import Post from './Post'
+import { useUserContext } from '../AuthContext';
 
 
 
@@ -12,20 +12,18 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, 
     const [loading, setLoading] = React.useState();
     const [message, setMessage] = React.useState();
     const [show, setShow] = React.useState(false);
+    const {user} = useUserContext();
 
-    // get the token of the current user to be used in for authenticating the user to use the events api 
+    //get the token of the current user to be used in for authenticating the user to use the events api 
     React.useEffect(() => {
         setLoading(true);
         const GetPosts = async () => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true) || null;
+            if(user){
+
                 const respoonse = await axios({
                 method: "get",
                 url: "/posts",
-                headers : {
-                    'authtoken': decoded || null
-                    }
-                });
+                }, {withCredentials: true});
                 // user isn't logged in
                 setPosts(respoonse.data.posts);
             } else {
@@ -35,14 +33,12 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, 
                 });
                 // user isn't logged in
                 setPosts(respoonse.data.posts);
-            }
-            
+            }   
         }
         GetPosts();
         setLoading(false);
     }, [posts]);
 
-    
 
     React.useEffect(() => {
         const timeId = setTimeout(() => {

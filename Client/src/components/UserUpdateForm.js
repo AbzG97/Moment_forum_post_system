@@ -1,11 +1,11 @@
 import React from 'react'
-import {useAuth} from '../AuthContext'
+import {useUserContext} from '../AuthContext'
 import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 import { Alert } from 'react-bootstrap';
 import Sidebar from './Sidebar';
 import axios from 'axios';
-import firebase from 'firebase/app'
+
 
 
 
@@ -19,7 +19,7 @@ function UpdateUserForm() {
     const [error, setError] = React.useState();
     const [loading, setLoading] = React.useState(false);
     
-    const {updateProfile, currentUser, updateEmail, updatePassword} = useAuth(); // pulling the signup function from context using the hook
+    const { user, updateProfile } = useUserContext(); // pulling the signup function from context using the hook
     const history = useHistory();
 
     const handleSubmit = async (e) => {
@@ -30,25 +30,19 @@ function UpdateUserForm() {
                 if(password && password !== confPassword){
                     return setError("passwords must match");
                 }
-                await updateEmail(email || currentUser.email); // value from forms
-                await updateProfile(name || currentUser.displayName, photoURL || currentUser.photoURL);
+                await updateProfile(name || user.name, email || user.email);
                 if(password) {
-                    await updatePassword(password)
+                    await updateProfile(name || user.name, email || user.email, password);
                 }
     
                 history.push('/');
-
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
                 await axios({
                     method: "PUT",
                     url:"/posts/postedBy/update",
                     data: {
                         username: name
-                    },
-                    headers: {
-                        'authtoken': decoded
                     }
-                });
+                }, {withCredentials: true});
                 
 
                 
@@ -82,11 +76,11 @@ function UpdateUserForm() {
                     <br></br>
                 
                     <form onSubmit={handleSubmit}>
-                        <input type="text" onChange={(e) => setEmail(e.target.value)} defaultValue={currentUser.email} />
+                        <input type="text" onChange={(e) => setEmail(e.target.value)} defaultValue={user.email} />
                         <br></br>
-                        <input type="text" onChange={(e) => setName(e.target.value)} defaultValue={currentUser.displayName}/>
+                        <input type="text" onChange={(e) => setName(e.target.value)} defaultValue={user.name}/>
                         <br></br>
-                        <input type="text" onChange={(e) => setPhotoURL(e.target.value)} defaultValue={currentUser.photoURL}/>
+                        {/* <input type="text" onChange={(e) => setPhotoURL(e.target.value)} defaultValue={user.photoURL}/> */}
                         <br></br>
                         <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Leave blank if you want the password unchanged"/>
                         <br></br>

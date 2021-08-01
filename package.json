@@ -10,15 +10,17 @@
     "heroku-postbuild": "cd Client && npm install --only=dev && npm install && npm run build"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "debug": "^2.6.9",
     "dotenv": "^9.0.2",
     "express": "^4.16.4",
-    "firebase-admin": "^9.8.0",
     "http-errors": "^1.6.3",
     "jade": "^1.11.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.9",
     "morgan": "^1.9.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "validator": "^13.6.0"
   }
 }
