@@ -37,9 +37,13 @@ export const UserProvider = ({children}) => {
         setUser();
     }
     
+    const updateProfile = async (name, email, password) => {
+        await axios.put('/users/profile/update' , {name, email, password} ,{withCredentials: true});
+
+    }
 
     return (
-        <UserContext.Provider value={{user, Signup, Login, fetchCurrentUser, Logout, deleteProfile}}>
+        <UserContext.Provider value={{user, Signup, Login, fetchCurrentUser, Logout, deleteProfile, updateProfile}}>
             {children}
         </UserContext.Provider>
     )

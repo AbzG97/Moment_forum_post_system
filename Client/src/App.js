@@ -7,7 +7,7 @@ import PrivateRoute from './components/PrivateRoute';
 import UserProfile from './components/UserProfile';
 import CreatePost from './components/CreatePost';
 import DetailedPostView from './components/DetailedPostView';
-// import UpdateUserForm from './components/UserUpdateForm';
+import UpdateUserForm from './components/UserUpdateForm';
 import SavedPosts from './components/SavedPosts';
 import {useUserContext} from './AuthContext'
 
@@ -36,7 +36,7 @@ function App() {
         
             <Route path="/details" render={(props) => <DetailedPostView {...props} detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
 
-            {/* <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>     */}
+            <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>    
             
             <Route path="/signup">
               <Signup/>

@@ -95,6 +95,7 @@ User_Router.post('/users/logout', authenticate, async (req, res) => {
 // update user data 
 User_Router.put("/users/profile/update", authenticate, async (req, res) => {
     // validating the updates so only valid updates are name, email and password
+    console.log(req.body);
     const incomingUpdates = Object.keys(req.body);
     const validUpdates = ['name', 'email', 'password'];
     const isValidUpdate = incomingUpdates.every((update) => validUpdates.includes(update));
@@ -109,6 +110,11 @@ User_Router.put("/users/profile/update", authenticate, async (req, res) => {
             } else {
                 // if the user is found update the data 
                 incomingUpdates.forEach((update) => user[update] = req.body[update]);
+
+                const salt = await bcrypt.genSalt(10);
+		        const hashed = await bcrypt.hash(user.password, salt);
+		        user.password = hashed;
+                
                 await user.save(); // save updates user data
                 res.status(200).send({message: "update successful", user: user});
             }

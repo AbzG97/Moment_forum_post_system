@@ -145,12 +145,12 @@ postRouter.post('/posts/comment/:id', auth, async (req,res) => {
 // update the username of all posts and comments made by the user when they update their username
 postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
     try {
-        const posts = await postModel.find({'postedBy.userId': req.user.uid});
+        const posts = await postModel.find({'postedBy.userId': req.user._id});
         posts.map(async (post) => {
             post.postedBy.username = req.body.username;
             await post.save();
         })
-        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user.uid});
+        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user._id});
         postsAgain.map(async (post) => {
             post.comments.map((comment) => comment.commentBy.username = req.body.username);
             await post.save();
