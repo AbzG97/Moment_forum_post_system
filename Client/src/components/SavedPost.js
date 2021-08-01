@@ -4,58 +4,42 @@ import axios from 'axios'
 import firebase from 'firebase/app'
 import {Link} from 'react-router-dom'
 import { Form, ButtonGroup, Button } from 'react-bootstrap'
-// import {ButtonGroup, Button} from "@material-ui/core"
+import { useUserContext } from '../AuthContext'
 
 const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
     const [token, setToken] = React.useState("");
     const [comment, setComment] = React.useState("");
     const [message, setMessage] = React.useState("");
     const [show, setShow] = React.useState();
+    const { user } = useUserContext();
    
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
-     // get the token of the current user to be used in for authenticating the user to use the posts api 
-     React.useEffect(() => {
-        const getToken = async () => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
-                setToken(decoded);
-            }
-        }
-        getToken();
-    }, []);
 
     const PostComment = async (e) => {
         e.preventDefault();
         setMessage("comment posted");
         setToggleCommentForm(false);
         setShow(true);
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/comment/${savedPost._id}`,
                 data: {
                     comment: comment
                 },
-                headers: {
-                    'authtoken': decoded
-                }
-            })
+            }, {withCredentials: true});
         }
         
     }
 
     // unsave the chosen savedPost 
     const unsavePost = async () => {
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/${savedPost._id}/unsave`,
-                headers: {
-                    'authtoken': decoded
-                }
-            });
+                
+            }, {withCredentials: true});
         }
     }
 
@@ -67,15 +51,11 @@ const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
 
 
     const likePost = async () => {
-        if(firebase.auth().currentUser){
-            const decoded = await firebase.auth().currentUser.getIdToken(true);
+        if(user){
             await axios({
                 method: "POST",
                 url: `/posts/${savedPost._id}/like`,
-                headers: {
-                    'authtoken': decoded
-                }
-            });
+            }, {withCredentials: true});
         }
         
     }

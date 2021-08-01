@@ -14,16 +14,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
     const [liked, setLiked] = React.useState(false);
     const [likes, setLikes] = React.useState(post.likes);
     const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
-     // get the token of the current user to be used in for authenticating the user to use the posts api 
-    //  React.useEffect(() => {
-    //     const getToken = async () => {
-    //         if(firebase.auth().currentUser){
-    //             const decoded = await firebase.auth().currentUser.getIdToken(true);
-    //             setToken(decoded);
-    //         }
-    //     }
-    //     getToken();
-    // }, []);
+    
 
     // check the status of a post
     React.useState(() => {
@@ -98,7 +89,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                         </Button>
                         <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={user ? false : true}>Comment</Button>
                         <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !user ? true : false} >Save</Button>
-                        <Button className="button" variant="outline-success" onClick={likePost}>Like /  {post.likes}</Button>
+                        <Button className="button" variant="outline-success" onClick={likePost} disabled={user ? false : true}>Like /  {post.likes}</Button>
                     </ButtonGroup>
                     {toggleCommentForm && <Form onSubmit={PostComment}>
                         <Form.Group>

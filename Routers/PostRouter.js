@@ -126,8 +126,8 @@ postRouter.put('/posts/update/:id', auth, async (req, res) => {
 postRouter.post('/posts/comment/:id', auth, async (req,res) => {
     const data = { 
         commentDesc: req.body.comment,
-        "commentBy.userId": req.user.uid,
-        "commentBy.username": req.user.displayName
+        "commentBy.userId": req.user._id,
+        "commentBy.username": req.user.name
     }
     try {
         const post = await postModel.findById(req.params.id);

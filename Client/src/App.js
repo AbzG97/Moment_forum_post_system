@@ -6,9 +6,9 @@ import Login from './components/Login';
 import PrivateRoute from './components/PrivateRoute';
 import UserProfile from './components/UserProfile';
 import CreatePost from './components/CreatePost';
-// import DetailedPostView from './components/DetailedPostView';
+import DetailedPostView from './components/DetailedPostView';
 // import UpdateUserForm from './components/UserUpdateForm';
-// import SavedPosts from './components/SavedPosts';
+import SavedPosts from './components/SavedPosts';
 import {useUserContext} from './AuthContext'
 
 function App() {
@@ -31,12 +31,12 @@ function App() {
     
             <Route exact path="/createpost" render={(props) => <CreatePost  {...props}/>} />
 
-            {/* <PrivateRoute path="/savedposts" render={(props) => <SavedPosts  {...props} posts={posts} 
+            <PrivateRoute path="/savedposts" render={(props) => <SavedPosts  {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} /> }/>
         
             <Route path="/details" render={(props) => <DetailedPostView {...props} detailedPost={detailedPost} setDetailedPost={setDetailedPost}/>}/>
 
-            <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>     */}
+            {/* <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>     */}
             
             <Route path="/signup">
               <Signup/>

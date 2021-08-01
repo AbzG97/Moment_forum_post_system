@@ -4,29 +4,29 @@ import styled from 'styled-components'
 import firebase from 'firebase/app'
 import axios from 'axios'
 import SavedPost from './SavedPost'
+import {useUserContext} from '../AuthContext'
 
 function SavedPosts({posts, setPosts, setDetailedPost, savedPosts, setSavedPosts}) {
-    // const [savedPosts, setSavedPosts] = React.useState([]);
+    const {user} = useUserContext();
     const [loading, setLoading] = React.useState();
+
      // get the token of the current user to be used in for authenticating the user to use the events api 
      React.useEffect(() => {
         setLoading(true);
         const GetSavedPosts = async () => {
-            if(firebase.auth().currentUser){
-                const decoded = await firebase.auth().currentUser.getIdToken(true);
+            if(user){
                 const respoonse = await axios({
                 method: "get",
                 url: "/posts/profile/savedPosts",
-                headers : {
-                    'authtoken': decoded
-                    }
-                });
+               
+                }, {withCredentials: true});
                 setSavedPosts(respoonse.data.posts);
             }
         }
         GetSavedPosts();
         setLoading(false);
     }, [savedPosts]);
+
     return (
         <div>
             <Sidebar/>
