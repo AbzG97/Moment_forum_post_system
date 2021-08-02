@@ -18,6 +18,7 @@ const UserProfile = ({setDetailedPost}) => {
     const [updatedPost, setUpdatedPost] = React.useState();
     const { user, fetchCurrentUser, deleteProfile } = useUserContext();
     const [showModal, setShowModal] = React.useState();
+    const [error, setError] = React.useState();
 
     const history = useHistory();
 
@@ -48,17 +49,13 @@ const UserProfile = ({setDetailedPost}) => {
 
     // deletes the comments and posts if the user decides to deletes their profile
     const handelUserPostsDelete = async () => {
-        deleteProfile();
-        await axios({
-            method: "delete",
-            url: "/posts/cascadeDelete",
-            data: {
-                uid: user._id
-            }
-        }); 
-        history.push("/"); 
-       
-              
+        try {
+            await deleteProfile();
+            history.push("/");  
+        } catch {
+            setError("Error deleting the profile");
+        }
+             
     } 
 
     return (

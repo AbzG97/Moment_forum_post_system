@@ -32,10 +32,13 @@ export const UserProvider = ({children}) => {
         setUser();
     }
 
+
     const deleteProfile = async () => {
         await axios.delete("/users/me/delete", {withCredentials: true});
         setUser();
     }
+
+    
     
     const updateProfile = async (name, email, password) => {
         await axios.put('/users/profile/update' , {name, email, password} ,{withCredentials: true});

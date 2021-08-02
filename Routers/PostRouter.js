@@ -126,8 +126,8 @@ postRouter.put('/posts/update/:id', auth, async (req, res) => {
 postRouter.post('/posts/comment/:id', auth, async (req,res) => {
     const data = { 
         commentDesc: req.body.comment,
-        "commentBy.userId": req.user._id,
-        "commentBy.username": req.user.name
+        userId: req.user._id,
+        username: req.user.name
     }
     try {
         const post = await postModel.findById(req.params.id);
@@ -150,9 +150,9 @@ postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
             post.postedBy.username = req.body.username;
             await post.save();
         })
-        const postsAgain = await postModel.find({'comments.commentBy.userId': req.user._id});
+        const postsAgain = await postModel.find({'comments.userId': req.user._id});
         postsAgain.map(async (post) => {
-            post.comments.map((comment) => comment.commentBy.username = req.body.username);
+            post.comments.map((comment) => comment.username = req.body.username);
             await post.save();
             res.status(200).send({message: "comment and post username are updated"});
         });
@@ -162,33 +162,11 @@ postRouter.put('/posts/postedBy/update', auth, async (req, res) =>{
     }
 });
 
-// cascade delete all of the posts and comments made by a user that deleted their profile
-postRouter.delete('/posts/cascadeDelete', async (req, res) => {
-    try {
-        // find all posts made by the deleted using their id
-        const posts = await postModel.find({'postedBy.userId' : req.body.uid});
-        posts.map(async (post) => {
-            console.log(post)
-            await post.delete(); // delete each post made by the user
-        });
-
-        // find all the comments made by the deleted user using their id
-        // added test comment from my_auth_system branch
-        const postsAgain = await postModel.find({'comments.commentBy.userId': req.body.uid});
-        postsAgain.map(async (post) => {
-            const filtered = post.comments.filter((state) => state.commentBy.userId !== req.body.uid);
-            console.log(filtered);
-            post.comments = filtered;
-            await post.save();
-        });
-    } catch {
-        res.status(500).send({message:"server error"});
-    }
-});
 
 // save route will add a an object which will just be a userId 
 // to the selected post (post id) in an array of all users that saved that post
 postRouter.post('/posts/:id/save', auth, async(req, res) => {
+    
     try {
         const post = await postModel.findById(req.params.id);
         if(!post) {

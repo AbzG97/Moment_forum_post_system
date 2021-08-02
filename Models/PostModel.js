@@ -17,15 +17,13 @@ const postSchema = new mongoose.Schema({
         required: false
     },
     comments: [{
-        commentBy: {
-            userId: {
-                type:String,
-                required: false
-            },
-            username: {
-                type: String,
-                required: true
-            }
+        userId: {
+            type: String,
+            required: false
+        },
+        username: {
+            type: String,
+            required: true
         },
         commentDesc: {
             type: String,

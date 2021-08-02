@@ -57,7 +57,7 @@ function DetailedPostView({detailedPost, setDetailedPost}) {
                     <Link to="/">Back to posts</Link>
                     <ListGroup variant="flush">
                         {LSData.comments.map((comment) => (
-                            <ListGroup.Item>{comment.commentDesc} <strong>by</strong> {comment.commentBy.username}</ListGroup.Item>
+                            <ListGroup.Item>{comment.commentDesc} <strong>by</strong> {comment.username}</ListGroup.Item>
 
                         ))}
                     </ListGroup>

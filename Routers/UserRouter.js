@@ -1,5 +1,6 @@
 const express = require("express");
 const user_model = require("../Models/UserModel");
+const post_model = require("../Models/PostModel");
 require("../dbConnection");
 const User_Router = express.Router();
 const authenticate = require("../backendAuth");
@@ -139,8 +140,30 @@ User_Router.get("/users", async (req, res) => {
 User_Router.delete("/users/me/delete", authenticate, async (req,res) => {
     console.log(req.user);
     try {
+         // find all posts made by the deleted using their id
+         const posts = await post_model.find({'postedBy.userId' : req.user._id});
+         posts.map(async (post) => {
+             // console.log(post)
+             await post.delete(); // delete each post made by the user
+         });
+
+        //  find all the comments made by the deleted user using their id
+        const postsAgain = await post_model.find({'comments.userId': req.user._id});
+        console.log("posts again", postsAgain);
+        postsAgain.map(async (post) => {
+            const filtered = post.comments.filter((state) => state.userId !== req.user._id);
+            // console.log(filtered);
+            post.comments = filtered;
+            await post.save();
+        });
+
+        // delete the user
         await user_model.findByIdAndDelete(req.user._id);
+
+
         res.status(200).send({message: "delete successful"});
+
+        
 
     } catch (e) {
         res.status(401).send({message: "can't delete a nonexistent user"});
