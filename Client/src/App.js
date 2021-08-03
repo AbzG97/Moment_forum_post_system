@@ -15,8 +15,9 @@ function App() {
   const [posts, setPosts ] = React.useState();
   const [detailedPost, setDetailedPost] = React.useState();
   const [savedPosts, setSavedPosts] = React.useState([]);
-  const { fetchCurrentUser} = useUserContext();
-  React.useEffect(() => fetchCurrentUser(), []);
+  const { fetchCurrentUser, user} = useUserContext();
+  const [authenticated, setAuthenticated] = React.useState();
+  React.useEffect(() => {fetchCurrentUser(); if(user){setAuthenticated(true)}}, [fetchCurrentUser, user]);
 
   return (
     <Router>
@@ -27,9 +28,9 @@ function App() {
             <Route exact path="/" render={(props) => <Dashboard {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} />} /> 
       
-            <Route path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
+            <PrivateRoute path="/profile" render={(props) => <UserProfile authenticated={authenticated} {...props} setDetailedPost={setDetailedPost}/>}/>
     
-            <Route exact path="/createpost" render={(props) => <CreatePost  {...props}/>} />
+            <PrivateRoute path="/createpost" render={(props) => <CreatePost  {...props}/>} />
 
             <PrivateRoute path="/savedposts" render={(props) => <SavedPosts  {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} /> }/>
@@ -38,9 +39,7 @@ function App() {
 
             <PrivateRoute path="/updateProfile" render={(props) => <UpdateUserForm  {...props}/>}/>    
             
-            <Route path="/signup">
-              <Signup/>
-            </Route>
+            <Route path="/signup" component={Signup}/>
 
             <Route path="/login" component={Login}/>
 

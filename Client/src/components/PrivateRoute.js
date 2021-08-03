@@ -2,8 +2,8 @@ import React from 'react'
 import {Redirect, Route} from 'react-router-dom'
 import {useUserContext} from '../AuthContext'
 
-const PrivateRoute = ({component: Component, ...rest}) => {
-    const {user} = useUserContext();
+const PrivateRoute = ({component: Component, authenticated, ...rest}) => {
+    const {user, fetchCurrentUser} = useUserContext();
     return (
         <Route {...rest} render={props => (
             user ? Component ? <Component {...props}/> :

@@ -27,11 +27,11 @@ function Sidebar() {
                 <p>{user.name}</p>
             </div>}
             <ul className="links">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/createpost">Create post</Link></li>
-                <li><Link to="/savedposts">Saved posts</Link></li>
-                <li><Link to="/profile">Profile</Link></li>
-                {user ?  <li onClick={handleLogout}>Logout</li> : <li><Link to="login">Login</Link></li>}
+                <Link to="/"><li>Home</li></Link>
+                <Link to="/createpost"><li>Create post</li></Link>
+                <Link to="/savedposts"><li>Saved posts</li></Link>
+                <Link to="/profile"><li>Profile</li></Link>
+                {user ?  <li onClick={handleLogout}>Logout</li> : <Link to="login"><li>Login</li></Link>}
             </ul>
             
         </StyledMenu>

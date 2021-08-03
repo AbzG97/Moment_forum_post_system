@@ -79,20 +79,15 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                     <p>#{post.category}</p>
                     <p>posted by <strong>{post.postedBy.username}</strong></p>
                     <p className="date">{post.date ?  post.date.slice(0,10) : post.date}</p>
-                    <ButtonGroup className="buttonGroup">
-                        <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
-                            <Link to={`/details/${post._id}`}>View</Link>
-                        </Button>
-                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={user ? false : true}>Comment</Button>
-                        <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !user ? true : false} >Save</Button>
+                    <div className="buttonGroup">
+                        <Link to={`/details/${post._id}`}><Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>View</Button></Link> /
+                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={user ? false : true}>Comment</Button> /
+                        <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !user ? true : false} >Save</Button> /
                         <Button className="button" variant="outline-success" onClick={likePost} disabled={user ? false : true}>Like /  {post.likes}</Button>
-                    </ButtonGroup>
-                    {toggleCommentForm && <Form onSubmit={PostComment}>
-                        <Form.Group>
-                            <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
-                            <Button type="submit" variant="outline-success">Post comment</Button> 
-                        </Form.Group>
-                        
+                    </div>
+                    {toggleCommentForm && <Form className="commentForm" onSubmit={PostComment}>
+                        <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
+                        <Button className="postCommentBtn" type="submit" variant="outline-success">Post comment</Button>   
                     </Form>}
                 </div>
             </div>
@@ -110,6 +105,7 @@ const EventCard = styled.div`
     -webkit-box-shadow: 0px 0px 25px 1px #000000; 
     box-shadow: 0px 0px 25px 0px #000000;
     position: relative;
+    width: 25vw;
     a {
         text-decoration: none;
         color: blue;
@@ -126,11 +122,7 @@ const EventCard = styled.div`
         justify-content: space-between;
         .data {
             .buttonGroup {
-                font-weight: bold;
-                .button {
-                    font-weight: bold;
-                    /* color: black; */
-                }
+                margin-bottom: 1rem;
             }
             .title {
                 font-size: 2rem;
@@ -148,6 +140,12 @@ const EventCard = styled.div`
     
             }
             
+        }
+        .commentForm {
+            .postCommentBtn {
+                margin-top: 1rem;
+            }
+
         }
     }
     .stats {

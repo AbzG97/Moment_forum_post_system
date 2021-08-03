@@ -24,7 +24,7 @@ export const UserProvider = ({children}) => {
     const fetchCurrentUser = async () => {
         const current_user = await axios.get('/users/me', {withCredentials: true});
         setUser(current_user.data);
-        console.log("called");
+        return user;
     }
 
     const Logout = async () => {

@@ -67,20 +67,15 @@ const SavedPost = ({posts, setPosts, setDetailedPost, savedPost}) => {
                     <p>#{savedPost.category}</p>
                     <p>posted by <strong>{savedPost.postedBy.username}</strong></p>
                     <p className="date">{savedPost.date ?  savedPost.date.slice(0,10) : savedPost.date}</p>
-                    <ButtonGroup className="buttonGroup">
-                        <Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>
-                            <Link to={`/details/${savedPost._id}`}>View</Link>
-                        </Button>
-                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button>
-                        <Button className="button"  variant="outline-dark" onClick={unsavePost}>Unsave</Button>
+                    <div className="buttonGroup">
+                        <Link to={`/details/${savedPost._id}`}><Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>View</Button></Link> /
+                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}>Comment</Button> /
+                        <Button className="button"  variant="outline-dark" onClick={unsavePost}>Unsave</Button> /
                         <Button className="button" variant="outline-success" onClick={likePost}>Like /  {savedPost.likes}</Button>
-                    </ButtonGroup>
-                    {toggleCommentForm && <Form onSubmit={PostComment}>
-                        <Form.Group>
-                            <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
-                            <Button type="submit" variant="outline-success">Post comment</Button> 
-                        </Form.Group>
-                        
+                    </div>
+                    {toggleCommentForm && <Form className="commentForm" onSubmit={PostComment}>
+                        <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
+                        <Button className="postCommentBtn" type="submit" variant="outline-success">Post comment</Button>   
                     </Form>}
                 </div>
             </div>
@@ -98,6 +93,7 @@ const EventCard = styled.div`
     -webkit-box-shadow: 0px 0px 25px 1px #000000; 
     box-shadow: 0px 0px 25px 0px #000000;
     position: relative;
+    width: 27vw;
     a {
         text-decoration: none;
         color: blue;
@@ -115,10 +111,7 @@ const EventCard = styled.div`
         .data {
             margin-top: 2rem;
             .buttonGroup {
-                font-weight: bold;
-                .button {
-                    font-weight: bold;
-                    /* color: black; */
+                margin-bottom: 1rem;
                 }
             }
             .title {
@@ -137,6 +130,12 @@ const EventCard = styled.div`
     
             }
             
+        }
+        .commentForm {
+            .postCommentBtn {
+                margin-top: 1rem;
+            }
+
         }
     }
     .stats {
