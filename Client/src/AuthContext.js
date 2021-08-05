@@ -42,20 +42,17 @@ export const UserProvider = ({children}) => {
 
     }
 
-    React.useEffect(() => {
-        // set current user
-        const fetchCurrentUser = async () => {
-            const current_user = await axios.get('/users/me', {withCredentials: true});
-            setUser(current_user.data);
-            setLoading(false);
-            
-        }
-        fetchCurrentUser();
-    }, [])
+    // set current user
+    const fetchCurrentUser = async () => {
+        const current_user = await axios.get('/users/me', {withCredentials: true});
+        setUser(current_user.data);
+        setLoading(false);
+        
+    }
 
     return (
-        <UserContext.Provider value={{user, Signup, Login, Logout, deleteProfile, updateProfile}}>
-            {!loading && children}
+        <UserContext.Provider value={{user, Signup, Login, Logout, deleteProfile, updateProfile, fetchCurrentUser, loading}}>
+            { children }
         </UserContext.Provider>
     )
 }

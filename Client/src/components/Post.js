@@ -6,10 +6,9 @@ import { Form, ButtonGroup, Button, Badge} from 'react-bootstrap'
 import { useUserContext } from '../AuthContext'
 
 const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPosts}) => {
-    const [comment, setComment] = React.useState("");
+    
     const [saveStatus, setSaveStatus] = React.useState(false);
     const {user} = useUserContext();
-    const [toggleCommentForm, setToggleCommentForm] = React.useState(false);
     
 
     // check the status of a post
@@ -22,23 +21,7 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
 
     }, [savedPosts])
 
-    const PostComment = async (e) => {
-        e.preventDefault();
-        setMessage("comment posted");
-        setToggleCommentForm(false);
-        setShow(true);
-        if(user){
-            await axios({
-                method: "POST",
-                url: `/posts/comment/${post._id}`,
-                data: {
-                    comment: comment
-                },
-               
-            }, {withCredentials: true})
-        }
-        
-    }
+    
 
     // save the chosen post 
     const savePost = async () => {
@@ -81,14 +64,10 @@ const Post = ({post, setDetailedPost,setMessage, setShow, savedPosts, setSavedPo
                     <p className="date">{post.date ?  post.date.slice(0,10) : post.date}</p>
                     <div className="buttonGroup">
                         <Link to={`/details/${post._id}`}><Button className="button" variant="outline-primary" onClick={ViewBtnHandler}>View</Button></Link> /
-                        <Button className="button" variant="outline-warning" onClick={() => setToggleCommentForm(!toggleCommentForm)}  disabled={user ? false : true}>Comment</Button> /
                         <Button className="button"  variant="outline-dark" onClick={savePost} disabled={saveStatus || !user ? true : false} >Save</Button> /
                         <Button className="button" variant="outline-success" onClick={likePost} disabled={user ? false : true}>Like /  {post.likes}</Button>
                     </div>
-                    {toggleCommentForm && <Form className="commentForm" onSubmit={PostComment}>
-                        <Form.Control placeholder="write a comment" onChange={(e) => setComment(e.target.value)} required/>
-                        <Button className="postCommentBtn" type="submit" variant="outline-success">Post comment</Button>   
-                    </Form>}
+                    
                 </div>
             </div>
         </EventCard>
@@ -105,7 +84,6 @@ const EventCard = styled.div`
     -webkit-box-shadow: 0px 0px 25px 1px #000000; 
     box-shadow: 0px 0px 25px 0px #000000;
     position: relative;
-    width: 25vw;
     a {
         text-decoration: none;
         color: blue;
@@ -141,12 +119,7 @@ const EventCard = styled.div`
             }
             
         }
-        .commentForm {
-            .postCommentBtn {
-                margin-top: 1rem;
-            }
-
-        }
+        
     }
     .stats {
         margin-top: 1rem;

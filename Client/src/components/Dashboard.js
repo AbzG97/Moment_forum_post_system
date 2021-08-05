@@ -53,10 +53,8 @@ const Dashboard = ({posts, setPosts, detailedPost, setDetailedPost, savedPosts, 
     return (
         <div>
             <Sidebar/>
-            <EventsContainerStyle>
-                {show && <Alert variant="success">{message}</Alert>} 
+            <EventsContainerStyle> 
                 <h1>Dashboard</h1>
-                
                 <div className="cards">
                     {!loading && posts && posts.map((post) =>(
                         <Post key={post._id} post={post} detailedPost={detailedPost} 

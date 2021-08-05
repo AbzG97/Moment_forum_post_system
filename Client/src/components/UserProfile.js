@@ -22,7 +22,7 @@ const UserProfile = ({setDetailedPost}) => {
 
     const history = useHistory();
 
-    React.useEffect(() => fetchCurrentUser(), []);
+    // React.useEffect(() => fetchCurrentUser(), []);
    
     React.useEffect(() => {
         const GetCurrentUserPosts = async () => {

@@ -3,19 +3,7 @@ import {Redirect, Route} from 'react-router-dom'
 import {useUserContext} from '../AuthContext'
 
 const PrivateRoute = ({component: Component, ...rest}) => {
-    const { fetchCurrentUser, user } = useUserContext();
-    const [authenticated, setAuthenticated] = React.useState();
-    const [loading, setLoading] = React.useState();
-    // console.log(user);
-    
-//   React.useState(() => {
-//     fetchCurrentUser();
-//     setLoading(true);
-//     if(user){
-//         setAuthenticated(true);
-//         setLoading(false);
-//     }
-// }, []);
+    const { fetchCurrentUser, user, loading } = useUserContext();
     
 
     return (
