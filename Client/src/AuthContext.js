@@ -6,6 +6,7 @@ export const UserContext = React.createContext();
 
 export const UserProvider = ({children}) => {
     const [user, setUser] = React.useState();
+    const [loading, setLoading] = React.useState(true);
 
     const Signup = async (name, email, password) => {
         await axios.post('/users/create', { name, email, password});
@@ -21,11 +22,7 @@ export const UserProvider = ({children}) => {
 
     }
 
-    const fetchCurrentUser = async () => {
-        const current_user = await axios.get('/users/me', {withCredentials: true});
-        setUser(current_user.data);
-        return user;
-    }
+    
 
     const Logout = async () => {
         await axios.post("/users/logout", {withCredentials: true});
@@ -45,9 +42,20 @@ export const UserProvider = ({children}) => {
 
     }
 
+    React.useEffect(() => {
+        // set current user
+        const fetchCurrentUser = async () => {
+            const current_user = await axios.get('/users/me', {withCredentials: true});
+            setUser(current_user.data);
+            setLoading(false);
+            
+        }
+        fetchCurrentUser();
+    }, [])
+
     return (
-        <UserContext.Provider value={{user, Signup, Login, fetchCurrentUser, Logout, deleteProfile, updateProfile}}>
-            {children}
+        <UserContext.Provider value={{user, Signup, Login, Logout, deleteProfile, updateProfile}}>
+            {!loading && children}
         </UserContext.Provider>
     )
 }

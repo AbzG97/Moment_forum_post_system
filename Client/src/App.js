@@ -15,9 +15,25 @@ function App() {
   const [posts, setPosts ] = React.useState();
   const [detailedPost, setDetailedPost] = React.useState();
   const [savedPosts, setSavedPosts] = React.useState([]);
-  const { fetchCurrentUser, user} = useUserContext();
+  const { user } = useUserContext();
   const [authenticated, setAuthenticated] = React.useState();
-  React.useEffect(() => {fetchCurrentUser(); if(user){setAuthenticated(true)}}, [fetchCurrentUser, user]);
+  const [loading, setLoading] = React.useState();
+
+      
+//   React.useState(() => {
+//     const getUser = async () =>{
+//       await fetchCurrentUser();
+//       setLoading(true);
+//       setAuthenticated(true);
+//       setLoading(false);
+//     }
+//     getUser();
+    
+// }, []);
+
+console.log(user);
+console.log(`loading: ${loading}, authenticated: ${authenticated}`);
+
 
   return (
     <Router>
@@ -28,7 +44,7 @@ function App() {
             <Route exact path="/" render={(props) => <Dashboard {...props} posts={posts} 
             setPosts={setPosts} setDetailedPost={setDetailedPost} savedPosts={savedPosts} setSavedPosts={setSavedPosts} />} /> 
       
-            <PrivateRoute path="/profile" render={(props) => <UserProfile authenticated={authenticated} {...props} setDetailedPost={setDetailedPost}/>}/>
+            <PrivateRoute path="/profile" render={(props) => <UserProfile {...props} setDetailedPost={setDetailedPost}/>}/>
     
             <PrivateRoute path="/createpost" render={(props) => <CreatePost  {...props}/>} />
 
